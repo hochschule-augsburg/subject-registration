@@ -8,7 +8,7 @@ import "./resources/css/CustomBootstrap.scss";
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { QueryClient, QueryClientProvider } from 'react-query';
 import App from "./App";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "@/context/AuthContext";
 import reportWebVitals from "./reportWebVitals";
 
 const queryClient = new QueryClient();
