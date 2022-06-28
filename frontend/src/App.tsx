@@ -19,6 +19,7 @@ import userContext from "./context/userContext";
 import SubjectSelectionContext from "./context/subjectSelectionContext";
 import Keycloak from "keycloak-js";
 import { URLS } from "./server_constants";
+import { useAuthDispatch } from "./context/AuthContext";
 
 function App() {
     const [user, setUser] = useState<Keycloak.KeycloakInstance | null>(null);
@@ -26,6 +27,7 @@ function App() {
     const [subjectSelection, setSubjectSelection] = useState(null);
     const [keycloak, setKeycloak] = useState<Keycloak.KeycloakInstance | null>(null);
     const [authenticated, setAuthenticated] = useState<boolean | undefined>(false);
+    const dispatchToken = useAuthDispatch();
 
     useEffect(() => {
         const createKeycloak = async () => {
@@ -35,6 +37,9 @@ function App() {
                 onLoad: "login-required",
             });
             setKeycloak(keycloak);
+            if (keycloak.token) {
+                dispatchToken(keycloak.token);
+            }
             setAuthenticated(keycloak.authenticated);
             setUser(keycloak);
             const userInfo = await keycloak.loadUserInfo();
@@ -74,55 +79,55 @@ function App() {
                                     subjectSelection, setSubjectSelection
                                 }}
                             >
-                                <Router>
-                                    <Routes>
-                                        <Route
-                                            path="/"
-                                            element={
-                                                <>
-                                                    <Navbar />
-                                                    <BurgerMenu
-                                                        name={URLS.HOME}
-                                                        username={
-                                                            userInfo
-                                                                ? `${userInfo.given_name} ${userInfo.family_name}`
-                                                                : ""
-                                                        }
-                                                        major={userInfo ? userInfo.degreeCourse : ""}
-                                                        preferred_username={
-                                                            userInfo ? userInfo.preferred_username : ""
-                                                        }
-                                                        // @ts-ignore
-                                                        logout={user ? user.logout : null}
-                                                        timestamp={
-                                                            userInfo ? userInfo.createTimestamp : "20210911"
-                                                        }
-                                                    />
-                                                    <Outlet />
-                                                </>
-                                            }
-                                        >
-                                            <Route index element={<Home />} />
+                                    <Router>
+                                        <Routes>
                                             <Route
-                                                path={`/${URLS.REGISTRATIONS}`}
-                                                element={<MyRegistrations />}
-                                            />
-                                            <Route
-                                                path={`/${URLS.START_REGISTRATION}`}
-                                                element={<StartRegistration />}
-                                            />
-                                            <Route
-                                                path={`/${URLS.SUBJECTS}`}
-                                                element={<SubjectOverview />}
-                                            />
-                                            <Route
-                                                path={`/${URLS.SUBJECTS}/:name`}
-                                                element={<SubjectDetail />}
-                                            />
-                                            <Route path={`/${URLS.INFO}`} element={<Info />} />
-                                        </Route>
-                                    </Routes>
-                                </Router>
+                                                path="/"
+                                                element={
+                                                    <>
+                                                        <Navbar />
+                                                        <BurgerMenu
+                                                            name={URLS.HOME}
+                                                            username={
+                                                                userInfo
+                                                                    ? `${userInfo.given_name} ${userInfo.family_name}`
+                                                                    : ""
+                                                            }
+                                                            major={userInfo ? userInfo.degreeCourse : ""}
+                                                            preferred_username={
+                                                                userInfo ? userInfo.preferred_username : ""
+                                                            }
+                                                            // @ts-ignore
+                                                            logout={user ? user.logout : null}
+                                                            timestamp={
+                                                                userInfo ? userInfo.createTimestamp : "20210911"
+                                                            }
+                                                        />
+                                                        <Outlet />
+                                                    </>
+                                                }
+                                            >
+                                                <Route index element={<Home />} />
+                                                <Route
+                                                    path={`/${URLS.REGISTRATIONS}`}
+                                                    element={<MyRegistrations />}
+                                                />
+                                                <Route
+                                                    path={`/${URLS.START_REGISTRATION}`}
+                                                    element={<StartRegistration />}
+                                                />
+                                                <Route
+                                                    path={`/${URLS.SUBJECTS}`}
+                                                    element={<SubjectOverview />}
+                                                />
+                                                <Route
+                                                    path={`/${URLS.SUBJECTS}/:name`}
+                                                    element={<SubjectDetail />}
+                                                />
+                                                <Route path={`/${URLS.INFO}`} element={<Info />} />
+                                            </Route>
+                                        </Routes>
+                                    </Router>
                             </SubjectSelectionContext.Provider>
                         </userContext.Provider>
                     </div>

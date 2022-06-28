@@ -10,7 +10,7 @@ interface PaginationProps {
     /**
      * Array of data that should be shown in the paginated form.
      */
-    data: any[],
+    data: SubjectTO[],
 
     /**
      * Array which holds all subjects currently marked to enroll by the user.
@@ -108,8 +108,8 @@ function Pagination(props: PaginationProps) {
                             id={subject.id}
                             professor={subject.professor}
                             creditPoints={subject.creditPoints}
-                            description={subject.description}
-                            specialization={subject.specialization}
+                            description={subject.description!}
+                            specialization={subject.specialization!}
                             capacity={subject.capacity}
                             status={subject.status}
                             enroll={!isRegistered(subject)}

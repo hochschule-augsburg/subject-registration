@@ -1,11 +1,6 @@
-import { useContext, useEffect, useState } from "react";
-import { SubjectControllerApi, SubjectTO } from "@/api";
 import Pagination from "../layout/Pagination";
-import { MASTER_MAJORS, COURSE_CATALOGUE } from "@/server_constants";
-import SubjectSelectionContext from "../../context/subjectSelectionContext";
-import userContext from "../../context/userContext";
-import { getRequestHeaders } from "../../util/util";
-import Keycloak from "keycloak-js";
+import { COURSE_CATALOGUE } from "@/server_constants";
+import { useGetAllSubjects } from "@/api/orval/subject-registration";
 
 // defines the max. number of subjects that should be shown on one page.
 const SUBJECT_LIMIT = 16;
@@ -17,38 +12,6 @@ const NO_SUBJECTS = "Momentan sind keine Wahlpflichtfächer vorhanden.";
  * Provides an overview of all available subjects.
  */
 function SubjectOverview() {
-    const subjectApi = new SubjectControllerApi();
-    const { user, setUser } = useContext(userContext);
-    const [userInfo, setUserInfo] = useState<Keycloak.KeycloakInstance | null>(null);
-    const [subjects, setSubjects] = useState<SubjectTO[] | null>(null);
-    const { subjectSelection, setSubjectSelection } = useContext(
-        SubjectSelectionContext
-    ) || {};
-
-    console.log(userInfo);
-
-    useEffect(() => {
-        const loadUser = async () => {
-            const userInfo = await user.loadUserInfo() as any;
-            setUserInfo(userInfo);
-            if (!subjects) {
-                console.log("get subjects!");
-                const subjectResponse = await subjectApi.getAllSubjects(
-                    getRequestHeaders(user)
-                );
-                console.log(`got ${subjectResponse.data.length} subjects`);
-                console.log(
-                    `subject selection of ${userInfo.preferred_username
-                    }: ${JSON.stringify(subjectSelection)}`
-                );
-                setSubjects(subjectResponse.data);
-            }
-        };
-        if (user) {
-            loadUser().catch(console.error);
-        }
-    }, [subjects, user, setUserInfo, subjectSelection, setSubjectSelection]);
-
     return (
         <>
             <div className="container main">
@@ -74,20 +37,30 @@ function SubjectOverview() {
                         </a>
                         .
                     </p>
-                    {subjects && subjects.length > 0 ? (
-                        <Pagination
-                            data={subjects}
-                            dataLimit={SUBJECT_LIMIT}
-                            pageLimit={PAGE_LIMIT}
-                        />
-                    ) : (
-                        <p>{NO_SUBJECTS}</p>
-                    )}
+                    <Subjects />
                 </div>
             </div>
             <br />
         </>
     );
+}
+
+function Subjects() {
+    const { isLoading, data: subjects } = useGetAllSubjects();
+
+    if (isLoading) {
+        return <p>Fächer werden geladen...</p>
+    }
+
+    if (!subjects|| subjects.length <= 0) {
+        return (<p>{NO_SUBJECTS}</p>);
+    }
+    return (<Pagination
+        // @ts-ignore
+        data={subjects}
+        dataLimit={SUBJECT_LIMIT}
+        pageLimit={PAGE_LIMIT}
+    />);
 }
 
 export default SubjectOverview;
