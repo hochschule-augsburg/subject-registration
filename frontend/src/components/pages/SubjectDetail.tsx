@@ -1,16 +1,5 @@
-import { useParams, useNavigate, Link } from "react-router-dom";
-import React, { useContext, useEffect, useState } from "react";
-import userContext from "../../context/userContext";
-import { SubjectControllerApi, SubjectTO } from "../../api";
-import { getRequestHeaders } from "../../util/util";
-
-import Keycloak from "keycloak-js";
-
-const PREVIOUS_PATH_MAP = {
-    "/registrations": "Meine Anmeldungen",
-    "/subjects": "Übersicht",
-};
-
+import { useParams, Link } from "react-router-dom";
+import { useGetAllSubjects } from "@/api/orval/subject-registration";
 interface SubjectDetailProps {
 
 }
@@ -22,44 +11,20 @@ interface SubjectDetailProps {
  * @constructor
  */
 function SubjectDetail(props: SubjectDetailProps) {
-    const subjectApi = new SubjectControllerApi();
-    const { user, setUser } = useContext(userContext);
-    const [userInfo, setUserInfo] = useState<Keycloak.KeycloakInstance | null>(null);
-    const [subject, setSubject] = useState<SubjectTO>();
-    const [previousPath, setPreviousPath] = useState();
     const { name } = useParams();
-    let navigate = useNavigate();
-
     const subjectName = name?.replace("_", " ");
 
-    useEffect(() => {
-        const loadUser = async () => {
-            const userInfo = await user.loadUserInfo() as any;
-            setUserInfo(userInfo);
-            console.log("[SubjectDetail] selected subject: " + subjectName);
-            console.log("[SubjectDetail] props:");
-            // fetch subject info from backend
-            const subjectResponse = await subjectApi.getAllSubjects(
-                getRequestHeaders(user)
-            );
-            const subject = subjectResponse.data.find(
-                (s) => s.id === subjectName
-            );
-            setSubject(subject);
-        };
-        if (user) {
-            loadUser().catch(console.error);
-        }
-    }, [subjectName, user, setUser]);
+    const { isLoading, data: subjects } = useGetAllSubjects();
 
-    /**
-     * Navigate to the previous page.
-     * @param {MouseEvent} e Instance of the mouse event.
-     */
-    const goBack = (e: React.SyntheticEvent) => {
-        navigate(-1);
-        e.preventDefault();
-    };
+    let subject = undefined;
+
+    if (subjects) {
+        subject = subjects.find((s) => s.id === subjectName);
+    }
+
+    if (isLoading || !subject) {
+        return <p>Fächer werden geladen...</p>
+    }
 
     return (
         <>
@@ -71,10 +36,10 @@ function SubjectDetail(props: SubjectDetailProps) {
                         </Link>
                         <span> / </span>
                         <Link to=".">
-                            {subject?.name}
+                            {subject.name}
                         </Link>
                     </p>
-                    <h2 style={{ marginBottom: "0.5em" }}>{subject?.name}</h2>
+                    <h2 style={{ marginBottom: "0.5em" }}>{subject.name}</h2>
                     {/* todo correct link */}
                     <p>
                         Detailliertere Informationen finden Sie im{" "}
