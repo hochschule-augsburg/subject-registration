@@ -77,7 +77,7 @@ function SubjectCardView(props: SubjectCardViewProps) {
 
     const subjectMutation = useCreateNewRegistration();
 
-    const {isLoading, data: userInfo} = useUserInfo();
+    const { isLoading, data: userInfo } = useUserInfo();
 
     /**
      * Handle clicks on the register/unregister button of a subject card. Opens the subject detail page.
@@ -104,11 +104,7 @@ function SubjectCardView(props: SubjectCardViewProps) {
         } else {
             subjects = subjects.filter((subject) => subject.id !== props.id);
         }
-        
-        // @ts-ignore
-        subjectMutation.mutate({data: {student: userInfo.sub, subjectSelection: [{subject: props.id, points: 2.5}]}});
 
-        console.log(`subject selection: ${JSON.stringify(subjects)}`);
         setSubjectSelection(subjects);
     };
 

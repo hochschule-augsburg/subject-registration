@@ -7,8 +7,7 @@ import userContext from "../../context/userContext";
 import { RegistrationControllerApi, RegistrationTO } from "@/api";
 import { getRequestHeaders } from "../../util/util";
 import Keycloak from "keycloak-js";
-
-import { useGetAllSubjects, useGetAllRegistrations } from "@/api/orval/subject-registration";
+import { useCreateNewRegistration } from "@/api/orval/subject-registration";
 
 const REG_STATUS = {
     RECEIVED: "Antrag eingegangen",
@@ -32,20 +31,8 @@ function MyRegistrations() {
     const [registration, setRegistration] = useState<RegistrationTO | null>(null);
     const { subjectSelection } = useContext(SubjectSelectionContext) || {};
 
-    const registrationsRequest = useGetAllRegistrations();
-    const subjectsRequest = useGetAllSubjects();
+    const subjectMutation = useCreateNewRegistration();
 
-    let registrations = undefined;
-
-    if (registrationsRequest.data && subjectsRequest.data) {
-        registrations = subjectsRequest.data.filter((s) => {
-            return registrationsRequest.data.find((r) => r.id === s.id) !== undefined
-        })
-    }
-
-    console.log(registrations);
-
-    /**
     useEffect(() => {
         const loadUser = async () => {
             const userInfo = await user.loadUserInfo();
@@ -73,7 +60,6 @@ function MyRegistrations() {
             loadUser().catch(console.error);
         }
     }, [user, setUser]);
-     */
 
     /**
      * Check if all input from the user is valid (unsigned numbers only).
@@ -99,8 +85,13 @@ function MyRegistrations() {
      * @param {MouseEvent} e Mouse event instance.
      */
     const handleRegistration = (e: React.SyntheticEvent) => {
+        e.preventDefault();
         const input = document.getElementsByTagName("input");
-        if (!validateInput(input)) {
+
+        let validInput = validateInput(input);
+        validInput = true;
+
+        if (validInput) {
             console.log(
                 `[MyRegistrations][completeRegistration] with cp ${input[0].value}!`
             );
@@ -108,7 +99,6 @@ function MyRegistrations() {
             console.log(
                 `MyRegistrations][completeRegistration] Invalid input detected!`
             );
-            e.preventDefault();
             return;
         }
         if (registration) {
@@ -163,7 +153,7 @@ function MyRegistrations() {
 
             console.log(`create new registration with ${JSON.stringify(arr)}`);
 
-            return registrationApi
+            registrationApi
                 .createNewRegistration({
                     student: user.idTokenParsed!.preferred_username,
                     subjectSelection: arr,
@@ -174,6 +164,21 @@ function MyRegistrations() {
                 .catch((err) => {
                     console.log(`error! ${err}`);
                 });
+
+            subjectMutation.mutate({
+                data: {
+                    // @ts-ignore
+                    student: user.idTokenParsed!.preferred_username,
+                    subjectSelection: [
+                        {
+                            subject: "00000001-0000-0000-0000-000000000000",
+                            // subject: "1",
+                            // subject: "00000001000000000000000000000000",
+                            points: 1000
+                        }
+                    ],
+                }
+            });
         }
     };
 
@@ -211,7 +216,7 @@ function MyRegistrations() {
                     </ul>
                 </div>
                 <div className="row">
-                    {registrations && registrations.length > 0 ? (
+                    {subjectSelection && subjectSelection.length > 0 ? (
                         <>
                             <div className="row">
                                 <h5>Informationen zur Anmeldung</h5>
@@ -235,7 +240,7 @@ function MyRegistrations() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {registrations.map((subject) => (
+                                        {subjectSelection.map((subject) => (
                                             <RegistrationTableItem
                                                 key={subject.id.toString()}
                                                 id={subject.id}
