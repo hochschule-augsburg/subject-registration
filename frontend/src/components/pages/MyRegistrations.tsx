@@ -7,7 +7,8 @@ import userContext from "../../context/userContext";
 import { RegistrationControllerApi, RegistrationTO } from "@/api";
 import { getRequestHeaders } from "../../util/util";
 import Keycloak from "keycloak-js";
-import { useCreateNewRegistration } from "@/api/orval/subject-registration";
+import { useCreateNewRegistration, useGetAllRegistrations } from "@/api/orval/subject-registration";
+import { useUserInfo } from "@/hooks/useUserInfo";
 
 const REG_STATUS = {
     RECEIVED: "Antrag eingegangen",
@@ -27,39 +28,13 @@ const REG_BTN_MAP = {
 function MyRegistrations() {
     const registrationApi = new RegistrationControllerApi();
     const { user, setUser } = useContext(userContext);
-    const [userInfo, setUserInfo] = useState<any>(null);
-    const [registration, setRegistration] = useState<RegistrationTO | null>(null);
+    // const [userInfo, setUserInfo] = useState<any>(null);
+    // const [registration, setRegistration] = useState<RegistrationTO | null>(null);
     const { subjectSelection } = useContext(SubjectSelectionContext) || {};
 
+    const { isLoading, data: registrations } = useGetAllRegistrations();
     const subjectMutation = useCreateNewRegistration();
-
-    useEffect(() => {
-        const loadUser = async () => {
-            const userInfo = await user.loadUserInfo();
-            setUserInfo(userInfo);
-            const registrationResponse = await registrationApi.getRegistration(
-                user.subject!,
-                getRequestHeaders(user)
-            );
-            console.log(
-                // @ts-ignore
-                `subject selection of ${userInfo.preferred_username}: ${JSON.stringify(
-                    subjectSelection
-                )}`
-            );
-            console.log(
-                `registrations of user ${user.subject}: ${registrationResponse.data}`
-            );
-            const registration = registrationResponse.data;
-            if (!registration) {
-                return;
-            }
-            setRegistration(registration);
-        };
-        if (user) {
-            loadUser().catch(console.error);
-        }
-    }, [user, setUser]);
+    const { data: userInfo } = useUserInfo();
 
     /**
      * Check if all input from the user is valid (unsigned numbers only).
@@ -101,7 +76,7 @@ function MyRegistrations() {
             );
             return;
         }
-        if (registration) {
+        if (registrations && registrations.length > 0) {
             // todo api not tested yet
             // update existing registration of the user if it was already created
             return registrationApi
@@ -168,7 +143,9 @@ function MyRegistrations() {
             subjectMutation.mutate({
                 data: {
                     // @ts-ignore
-                    student: user.idTokenParsed!.preferred_username,
+                    //student: user.idTokenParsed!.preferred_username,
+                    // @ts-ignore
+                    student: userInfo.sub,
                     subjectSelection: [
                         {
                             subject: "00000001-0000-0000-0000-000000000000",
@@ -265,7 +242,7 @@ function MyRegistrations() {
                                     type="button"
                                     onClick={(e) => handleRegistration(e)}
                                 >
-                                    {registration ? REG_BTN_MAP.EDIT : REG_BTN_MAP.CREATE}
+                                    {(registrations && registrations.length > 0) ? REG_BTN_MAP.EDIT : REG_BTN_MAP.CREATE}
                                 </button>
                             </div>
                         </>
