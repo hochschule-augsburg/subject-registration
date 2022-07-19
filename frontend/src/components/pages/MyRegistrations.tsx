@@ -8,6 +8,8 @@ import { RegistrationControllerApi, RegistrationTO } from "@/api";
 import { getRequestHeaders } from "../../util/util";
 import Keycloak from "keycloak-js";
 
+import { useGetAllSubjects, useGetAllRegistrations } from "@/api/orval/subject-registration";
+
 const REG_STATUS = {
     RECEIVED: "Antrag eingegangen",
     REJECTED: "Antrag abgelehnt",
@@ -30,6 +32,20 @@ function MyRegistrations() {
     const [registration, setRegistration] = useState<RegistrationTO | null>(null);
     const { subjectSelection } = useContext(SubjectSelectionContext) || {};
 
+    const registrationsRequest = useGetAllRegistrations();
+    const subjectsRequest = useGetAllSubjects();
+
+    let registrations = undefined;
+
+    if (registrationsRequest.data && subjectsRequest.data) {
+        registrations = subjectsRequest.data.filter((s) => {
+            return registrationsRequest.data.find((r) => r.id === s.id) !== undefined
+        })
+    }
+
+    console.log(registrations);
+
+    /**
     useEffect(() => {
         const loadUser = async () => {
             const userInfo = await user.loadUserInfo();
@@ -57,6 +73,7 @@ function MyRegistrations() {
             loadUser().catch(console.error);
         }
     }, [user, setUser]);
+     */
 
     /**
      * Check if all input from the user is valid (unsigned numbers only).
@@ -194,7 +211,7 @@ function MyRegistrations() {
                     </ul>
                 </div>
                 <div className="row">
-                    {subjectSelection && subjectSelection.length > 0 ? (
+                    {registrations && registrations.length > 0 ? (
                         <>
                             <div className="row">
                                 <h5>Informationen zur Anmeldung</h5>
@@ -218,7 +235,7 @@ function MyRegistrations() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {subjectSelection.map((subject) => (
+                                        {registrations.map((subject) => (
                                             <RegistrationTableItem
                                                 key={subject.id.toString()}
                                                 id={subject.id}

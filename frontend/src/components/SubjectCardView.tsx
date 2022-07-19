@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 import React, { useContext } from "react";
 import SubjectSelectionContext from "../context/subjectSelectionContext";
+import { useCreateNewRegistration } from "@/api/orval/subject-registration";
+import userContext from "@/context/userContext";
+import { NewRegistrationTO } from "@/api/orval/subject-registration.schemas";
+import { useUserInfo } from "@/hooks/useUserInfo";
 
 const ACTION = "Aktion";
 const NO_DESCRIPTION = "Keine Beschreibung vorhanden.";
@@ -71,6 +75,10 @@ function SubjectCardView(props: SubjectCardViewProps) {
         return <></>;
     }
 
+    const subjectMutation = useCreateNewRegistration();
+
+    const {isLoading, data: userInfo} = useUserInfo();
+
     /**
      * Handle clicks on the register/unregister button of a subject card. Opens the subject detail page.
      * @param {MouseEvent} e Instance of the mouse event.
@@ -96,6 +104,10 @@ function SubjectCardView(props: SubjectCardViewProps) {
         } else {
             subjects = subjects.filter((subject) => subject.id !== props.id);
         }
+        
+        // @ts-ignore
+        subjectMutation.mutate({data: {student: userInfo.sub, subjectSelection: [{subject: props.id, points: 2.5}]}});
+
         console.log(`subject selection: ${JSON.stringify(subjects)}`);
         setSubjectSelection(subjects);
     };
