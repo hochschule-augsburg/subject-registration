@@ -22,7 +22,7 @@ public class SubjectSelectionEntity {
     @Column(name = "id", unique = true, nullable = false, updatable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name="subject_id", nullable = false)
+    @Column(name="subject_id", nullable = false, columnDefinition = "BINARY(16)")
     private UUID subject;
 
     //Registration ID
