@@ -1,4 +1,4 @@
-package de.hochschule.augsburg;
+package de.hochschule.augsburg.process;
 
 import de.hochschule.augsburg.registration.domain.service.RegistrationService;
 import lombok.RequiredArgsConstructor;

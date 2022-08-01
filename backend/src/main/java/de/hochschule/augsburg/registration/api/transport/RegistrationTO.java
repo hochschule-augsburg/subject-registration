@@ -27,6 +27,9 @@ public class RegistrationTO {
     private String student;
 
     @NotNull
+    private UUID registrationWindowId;
+
+    @NotNull
     @Size(min = 1)
     private List<SubjectSelectionTO> subjectSelection;
 

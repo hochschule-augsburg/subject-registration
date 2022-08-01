@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -39,16 +38,16 @@ public class RegistrationController {
     @Operation(summary = "Get list of all Registrations")
     public ResponseEntity<List<RegistrationTO>> getAllRegistrations() {
         log.debug("Received request to get all registrations");
-        final List<Registration> allProjects = this.registrationService.getAllRegistrations(userContext.getLoggedInUser());
+        final List<Registration> allProjects = this.registrationService.getAllRegistrations(this.userContext.getLoggedInUser());
         return ResponseEntity.ok().body(this.registrationApiMapper.map(allProjects));
     }
 
     @GetMapping("/{uid}")
     @Transactional(readOnly = true)
     @Operation(summary = "Get registration by student")
-    public ResponseEntity<RegistrationTO> getRegistration(@PathVariable String uid ) {
+    public ResponseEntity<RegistrationTO> getRegistration(@PathVariable final String uid) {
         log.debug("Received request to get all registrations");
-        final Registration registration = this.registrationService.getRegistrationByStudent(uid);
+        final Registration registration = this.registrationService.getRegistrationByStudent(uid).orElseThrow();
         return ResponseEntity.ok().body(this.registrationApiMapper.map(registration));
     }
 
@@ -79,5 +78,13 @@ public class RegistrationController {
         log.debug("Received request to delete the registration with the id '{}'", registrationId);
         this.registrationService.deleteRegistration(registrationId, this.userContext.getLoggedInUser());
         return ResponseEntity.ok().build();
+    }
+
+    @Transactional
+    @GetMapping("/{registrationWindowId}/{subjectId}")
+    @Operation(summary = "Retrieve all registrations for a login window and elective subject")
+    public ResponseEntity<List<RegistrationTO>> getRegistrationsByRegistrationWindowAndSubject(@PathVariable("registrationWindowId") final UUID registrationWindowId, @PathVariable("subjectId") final UUID subjectId) {
+        final List<Registration> registrations = this.registrationService.getRegistrationsByRegistrationWindowAndSubject(registrationWindowId, subjectId, this.userContext.getLoggedInUser());
+        return ResponseEntity.ok().body(this.registrationApiMapper.map(registrations));
     }
 }

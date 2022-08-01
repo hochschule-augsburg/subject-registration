@@ -22,7 +22,10 @@ public class SubjectSelectionTO {
     private UUID id;
 
     @NotNull
-    private UUID subject;
+    private UUID subjectId;
+
+    @NotNull
+    private UUID registrationId;
 
     @NotNull
     @Min(1)

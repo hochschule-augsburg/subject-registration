@@ -1,4 +1,4 @@
-package de.hochschule.augsburg;
+package de.hochschule.augsburg.process;
 
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.Deployment;
@@ -9,11 +9,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.as;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertThat;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.*;
-import static org.camunda.bpm.model.cmmn.PlanItemTransition.complete;
 
 public class RegistrationProcessTest {
 
@@ -25,8 +21,8 @@ public class RegistrationProcessTest {
     @Deployment(resources = {"subject_registration.bpmn"})
     public void shouldExecuteHappyPath() {
         // Given we create a new process instance
-        ProcessInstance processInstance = runtimeService()
-                .startProcessInstanceByKey("Process_Register_Subject", Map.of("student","max.mustermann"));
+        final ProcessInstance processInstance = runtimeService()
+                .startProcessInstanceByKey("Process_Register_Subject", Map.of("student", "max.mustermann"));
 
         assertThat(processInstance).isActive();
 
@@ -56,11 +52,11 @@ public class RegistrationProcessTest {
     public void shouldCancelRegistration() {
 
         DelegateExpressions.registerJavaDelegateMock("cancellationDelegate")
-        .onExecutionSetVariable("registrationCanceled", true);
+                .onExecutionSetVariable("registrationCanceled", true);
 
         // Given we create a new process instance
-        ProcessInstance processInstance = runtimeService()
-                .startProcessInstanceByKey("Process_Register_Subject", Map.of("student","max.mustermann"));
+        final ProcessInstance processInstance = runtimeService()
+                .startProcessInstanceByKey("Process_Register_Subject", Map.of("student", "max.mustermann"));
 
         assertThat(processInstance).isActive();
 
@@ -81,8 +77,8 @@ public class RegistrationProcessTest {
     @Deployment(resources = {"subject_registration.bpmn"})
     public void shouldExecuteTimeout() {
         // Given we create a new process instance
-        ProcessInstance processInstance = runtimeService()
-                .startProcessInstanceByKey("Process_Register_Subject", Map.of("student","max.mustermann"));
+        final ProcessInstance processInstance = runtimeService()
+                .startProcessInstanceByKey("Process_Register_Subject", Map.of("student", "max.mustermann"));
 
         assertThat(processInstance).isActive();
 

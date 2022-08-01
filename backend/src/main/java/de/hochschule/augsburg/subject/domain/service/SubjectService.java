@@ -35,8 +35,7 @@ public class SubjectService {
      * Create a new subject
      *
      * @param newSubject subject that is created
-     * @param professor Professor that gets assigned to the new subject
-     *
+     * @param professor  Professor that gets assigned to the new subject
      * @return the new subject
      */
     public Subject createSubject(final Subject newSubject, final String professor) {
@@ -49,7 +48,7 @@ public class SubjectService {
      * Delete subject
      *
      * @param subjectName Name of the subject
-     * @param professor ID of the Professor
+     * @param professor   ID of the Professor
      */
     public void deleteSubject(final String subjectName, final String professor) {
         final Subject subject = this.subjectMapper.map(this.subjectRepository.findByName(subjectName));
@@ -62,12 +61,15 @@ public class SubjectService {
         this.subjectRepository.deleteSubjectByName(subjectName);
     }
 
+    public void deleteAllSubjects() {
+        this.subjectRepository.deleteAll();
+    }
+
     /**
      * Update an existing subject.
      *
      * @param subjectUpdate Update that is applied
-     * @param professor ID of the professor
-     *
+     * @param professor     ID of the professor
      * @return the updated subject
      */
     public Subject updateSubject(final SubjectUpdate subjectUpdate, final String professor) {
@@ -90,7 +92,7 @@ public class SubjectService {
      */
     public void validateSubject(final UUID subjectId) {
         if (this.findSubject(subjectId) == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "subject: " + subjectId + " not exists!" );
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "subject: " + subjectId + " not exists!");
         }
     }
 
@@ -111,5 +113,9 @@ public class SubjectService {
         return this.subjectRepository.findById(subjectId)
                 .map(this.subjectMapper::map)
                 .orElse(null);
+    }
+
+    public boolean hasAccess(final String userId, final UUID subjectId) {
+        return this.subjectRepository.findByIdAndAndProfessor(subjectId, userId).isPresent();
     }
 }

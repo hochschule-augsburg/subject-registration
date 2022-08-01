@@ -20,14 +20,17 @@ public class RegistrationEntity {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "id", unique = true, nullable = false, updatable = false, columnDefinition = "BINARY(16)")
+    @Column(name = "id", unique = true, nullable = false, updatable = false, columnDefinition = "uuid")
     private UUID id;
 
     @Column(name = "student", nullable = false)
     private String student;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "registration_id")
+    @JoinColumn(name = "subjectSelection_id")
     private List<SubjectSelectionEntity> subjectSelection;
+
+    @JoinColumn(name = "registration_window_id", columnDefinition = "uuid")
+    private UUID registrationWindowId;
 
 }

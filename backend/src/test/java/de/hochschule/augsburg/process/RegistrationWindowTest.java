@@ -1,4 +1,4 @@
-package de.hochschule.augsburg;
+package de.hochschule.augsburg.process;
 
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.Deployment;
