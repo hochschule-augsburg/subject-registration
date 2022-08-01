@@ -151,7 +151,7 @@ function MyRegistrations() {
                             subject: "00000001-0000-0000-0000-000000000000",
                             // subject: "1",
                             // subject: "00000001000000000000000000000000",
-                            points: 1000
+                            points: 900
                         }
                     ],
                 }
