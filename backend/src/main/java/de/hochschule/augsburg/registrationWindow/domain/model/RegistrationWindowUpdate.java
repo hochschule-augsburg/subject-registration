@@ -6,13 +6,17 @@ import lombok.Getter;
 
 import java.util.UUID;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
 public class RegistrationWindowUpdate {
     private final UUID id;
 
-    private final String startDate;
+    private final LocalDateTime startDate;
 
-    private final String endDate;
+    private final LocalDateTime endDate;
+
+    private final RegistrationWindowStatus status;
 }

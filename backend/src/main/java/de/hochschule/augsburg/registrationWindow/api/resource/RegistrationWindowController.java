@@ -86,11 +86,11 @@ public class RegistrationWindowController {
     @Operation(summary = "Create a new registration window")
     public ResponseEntity<RegistrationWindowTO> createNewRegistrationWindow(@RequestBody @Valid final NewRegistrationWindowTO newRegistrationWindowTO) {
         log.debug("Received request to create a new registration period: {}", newRegistrationWindowTO);
-        if (!this.securityService.isProfessor()) {// Damit werden auch user Rechte ueberprueft
-            return ResponseEntity.status(403).build();
-        }
+        // if (!this.securityService.isProfessor()) {// Damit werden auch user Rechte ueberprueft
+        //     return ResponseEntity.status(403).build();
+        // }
         final RegistrationWindow registrationWindow = this.registrationWindowService.createRegistrationWindow(this.registrationWindowApiMapper.map(newRegistrationWindowTO), this.userContext.getLoggedInUser());
-        final RegistrationWindowUpdate registrationWindowUpdate = new RegistrationWindowUpdate(registrationWindow.getId(), registrationWindow.getStartDate(), registrationWindow.getEndDate());
+        final RegistrationWindowUpdate registrationWindowUpdate = new RegistrationWindowUpdate(registrationWindow.getId(), registrationWindow.getStartDate(), registrationWindow.getEndDate(), registrationWindow.getStatus());
         registrationWindow.update(registrationWindowUpdate);
         return ResponseEntity.ok(this.registrationWindowApiMapper.map(registrationWindow));
     }

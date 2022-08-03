@@ -3,13 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
+    "@mui/icons-material": "^5.10.9",
+    "@mui/material": "^5.9.3",
+    "@mui/x-data-grid": "^5.17.12",
+    "@mui/x-date-pickers": "^5.0.13",
+    "@tanstack/react-query-devtools": "^4.16.1",
     "axios": "^0.21.1",
     "bootstrap": "^5.0.1",
     "keycloak-js": "^15.0.2",
+    "moment": "^2.29.4",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
+    "react-query": "^3.39.2",
     "react-router-dom": "^6.3.0",
-    "typescript-axios": "file:src/api",
+    "styled-components": "^5.3.6",
+    "usehooks-ts": "^2.9.1",
     "web-vitals": "^1.1.2"
   },
   "devDependencies": {
@@ -18,15 +28,21 @@
     "@types/react": "^18.0.8",
     "@types/react-dom": "^18.0.3",
     "@vitejs/plugin-react": "^1.3.2",
+    "orval": "^6.7.1",
     "sass": "^1.34.0",
     "typescript": "^4.5.2",
     "vite": "^2.9.8"
+  },
+  "optionalDependencies": {
+    "fsevents": "*",
+    "esbuild-android-64": "*"
   },
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview --port 3000",
-    "apiGeneration": "openapi-generator-cli generate -i http://localhost:9090/v3/api-docs -g typescript-axios -o src/api"
+    "apiGeneration": "openapi-generator-cli generate -i http://localhost:9090/v3/api-docs -g typescript-axios -o src/api",
+    "orval": "orval"
   },
   "eslintConfig": {
     "extends": [

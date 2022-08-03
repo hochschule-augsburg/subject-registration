@@ -1,143 +1,158 @@
-import "./resources/css/App.css";
-import "./resources/css/BurgerMenu.css";
-import Home from "./components/pages/Home";
-import Navbar from "./components/layout/Navbar";
-import BurgerMenu from "./components/layout/BurgerMenu";
-import MyRegistrations from "./components/pages/MyRegistrations";
-import StartRegistration from "./components/pages/StartRegistration";
-import SubjectOverview from "./components/pages/SubjectOverview";
-import SubjectDetail from "./components/pages/SubjectDetail";
-import Info from "./components/pages/Info";
-import {
-    BrowserRouter as Router,
-    Route,
-    Routes,
-    Outlet,
-} from "react-router-dom";
 import { useEffect, useState } from "react";
-import userContext from "./context/userContext";
-import SubjectSelectionContext from "./context/subjectSelectionContext";
 import Keycloak from "keycloak-js";
-import { URLS } from "./server_constants";
+import { LoginRedirect } from "./LoginRedirect";
+import { AppBar, Box, CssBaseline, Tab, Tabs, Toolbar, Typography } from "@mui/material";
+import { Link, Route, BrowserRouter as Router, Routes, useLocation, matchPath } from "react-router-dom";
+import { Subjects } from "./pages/Subjects";
+import { useAuthDispatch } from "./context/AuthContext";
+import { StepperPage } from "./pages/StepperPage";
+import { DeanPage } from "./pages/DeanPage";
+import { DeanDetails } from "./pages/DeanDetails";
+
+import "./resources/css/AppTabsStyles.css";
+import { WindowPage } from "./pages/WindowPage";
+
+type AuthStatus = "pending" | "authenticated" | "unauthenticated";
 
 function App() {
-    const [user, setUser] = useState<Keycloak.KeycloakInstance | null>(null);
-    const [userInfo, setUserInfo] = useState<any>(null);
-    const [subjectSelection, setSubjectSelection] = useState(null);
-    const [keycloak, setKeycloak] = useState<Keycloak.KeycloakInstance | null>(null);
-    const [authenticated, setAuthenticated] = useState<boolean | undefined>(false);
+    const [authStatus, setAuthStatus] = useState<AuthStatus>("pending");
+    const [keycloak, setKeycloak] = useState<Keycloak.KeycloakInstance>();
+    const [userId, setUserId] = useState<string | undefined>("");
+    const dispatchToken = useAuthDispatch();
 
     useEffect(() => {
-        const createKeycloak = async () => {
-            const keycloak = Keycloak("/keycloak.json");
-
-            await keycloak.init({
-                onLoad: "login-required",
+        const keycloak = Keycloak("/keycloak.json");
+        keycloak.onTokenExpired = () => {
+            keycloak.updateToken(30).then((refreshed) => {
+                if (refreshed) {
+                    console.log("Successfully refreshed token");
+                }
+                if (keycloak.token) {
+                    dispatchToken(keycloak.token);
+                }
+            }).catch(() => {
+                console.log("Unable to refresh token, logging out...");
+                keycloak.logout();
             });
-            setKeycloak(keycloak);
-            setAuthenticated(keycloak.authenticated);
-            setUser(keycloak);
-            const userInfo = await keycloak.loadUserInfo();
-            setUserInfo(userInfo);
         };
-
-        if (!keycloak) {
-            // The timeout is needed to prevent an infinite redirect bug when
-            // using <StrictMode>, see: https://github.com/react-keycloak/react-keycloak/issues/182
-            // In pruduction this should have no noticeable difference, since
-            // a timeout with 0 is executed on the next event cycle
-            const timer = setTimeout(() => {
-                createKeycloak().catch(console.error);
-            }, 0);
-
-            return () => {
-                clearTimeout(timer);
-            };
-        }
-
-        return () => { };
+        keycloak.init({}).then(authenticated => {
+            console.log(authenticated ? "authenticated" : "not authenticated");
+            if (authenticated) {
+                setAuthStatus("authenticated");
+                if (keycloak.token) {
+                    dispatchToken(keycloak.token);
+                    setUserId(keycloak.idTokenParsed?.sub);
+                }
+            } else {
+                setKeycloak(keycloak);
+                setAuthStatus("unauthenticated");
+            }
+        }).catch(() => {
+            console.log("failed to initialize");
+        });
     }, []);
 
+    if (authStatus === "authenticated" && keycloak) {
+        return (<MainPage keycloak={keycloak} userId={userId} />);
+    }
+    if (authStatus === "unauthenticated" && keycloak) {
+        return (<LoginRedirect keycloak={keycloak} />)
+    }
+    return (<p>Pending...</p>)
+}
+
+interface MainPageProps {
+    keycloak: Keycloak.KeycloakInstance;
+    userId: string | undefined;
+}
+
+function useRouteMatch(patterns: readonly string[]) {
+    const { pathname } = useLocation();
+
+    for (let i = 0; i < patterns.length; i += 1) {
+        const pattern = patterns[0];
+        const possibleMatch = matchPath(pattern, pathname);
+        if (possibleMatch !== null) {
+            return possibleMatch;
+        }
+    }
+
+    return null;
+}
+
+interface CustomTabsProps {
+    clickHandler: () => void;
+}
+
+function CustomTabs(props: CustomTabsProps) {
+    const { pathname } = useLocation();
+
+    const routeMatch = useRouteMatch(['/registrations', '/deanview', '/window']);
+    const currentTab = routeMatch?.pattern?.path;
+
     return (
-        <>
-            {keycloak ? (
-                authenticated ? (
-                    <div>
-                        <userContext.Provider value={{
-                            // @ts-ignore
-                            user,
-                            setUser
-                        }}>
-                            <SubjectSelectionContext.Provider
-                                value={{
-                                    // @ts-ignore
-                                    subjectSelection, setSubjectSelection
-                                }}
-                            >
-                                <Router>
-                                    <Routes>
-                                        <Route
-                                            path="/"
-                                            element={
-                                                <>
-                                                    <Navbar />
-                                                    <BurgerMenu
-                                                        name={URLS.HOME}
-                                                        username={
-                                                            userInfo
-                                                                ? `${userInfo.given_name} ${userInfo.family_name}`
-                                                                : ""
-                                                        }
-                                                        major={userInfo ? userInfo.degreeCourse : ""}
-                                                        preferred_username={
-                                                            userInfo ? userInfo.preferred_username : ""
-                                                        }
-                                                        // @ts-ignore
-                                                        logout={user ? user.logout : null}
-                                                        timestamp={
-                                                            userInfo ? userInfo.createTimestamp : "20210911"
-                                                        }
-                                                    />
-                                                    <Outlet />
-                                                </>
-                                            }
-                                        >
-                                            <Route index element={<Home />} />
-                                            <Route
-                                                path={`/${URLS.REGISTRATIONS}`}
-                                                element={<MyRegistrations />}
-                                            />
-                                            <Route
-                                                path={`/${URLS.START_REGISTRATION}`}
-                                                element={<StartRegistration />}
-                                            />
-                                            <Route
-                                                path={`/${URLS.SUBJECTS}`}
-                                                element={<SubjectOverview />}
-                                            />
-                                            <Route
-                                                path={`/${URLS.SUBJECTS}/:name`}
-                                                element={<SubjectDetail />}
-                                            />
-                                            <Route path={`/${URLS.INFO}`} element={<Info />} />
-                                        </Route>
-                                    </Routes>
-                                </Router>
-                            </SubjectSelectionContext.Provider>
-                        </userContext.Provider>
-                    </div>
-                ) : (
-                    <div>
-                        <p>Error: Authentication failed!</p>
-                    </div>
-                )
-            ) : (
-                <div>
-                    <p>Starting keycloak service...</p>
-                </div>
-            )}
-        </>
+        <Tabs value={pathname} sx={{ ml: '10rem' }} >
+            <Tab label="Meine Anmeldungen" value="/registrations" to="/registrations" component={Link} />
+            <Tab label="Meine Veranstaltungen" value="/deanview" to="/deanview" component={Link} />
+            <Tab label="Anmeldungsfenster" value="/window" to="/window" component={Link} />
+            <Tab label="Abmelden" onClick={props.clickHandler} />
+        </Tabs>
     );
 }
 
-export default App;
+function MainPage(props: MainPageProps) {
+    const logout = () => {
+        props.keycloak.logout();
+    };
+
+    return (
+        <Router>
+            <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                <CssBaseline />
+                <AppBar
+                    position="fixed"
+                    sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    style={{ background: '#F00045' }}
+                >
+                    <Toolbar >
+                        <Typography variant="h6" noWrap component="div">
+                            WPF Anmeldung
+                        </Typography>
+                        <CustomTabs clickHandler={logout} />
+                    </Toolbar>
+                </AppBar>
+                <Box
+                    component="main"
+                    sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3, maxWidth: 1200, ml: '10px' }}
+                >
+                    <Toolbar />
+
+                    <Routes>
+                        <Route
+                            path="/registrations"
+                            element={<StepperPage userId={props.userId} />}
+                        />
+                        <Route
+                            path="/deanview"
+                            element={<DeanPage />}
+                        />
+                        <Route
+                            path="/deanview/:id"
+                            element={<DeanDetails />}
+                        />
+                        <Route
+                            path="/window"
+                            element={<WindowPage />}
+                        />
+                        <Route
+                            path="/subjects"
+                            element={<Subjects />}
+                        />
+                    </Routes>
+                </Box>
+            </Box>
+        </Router>
+    );
+}
+
+export { App };
