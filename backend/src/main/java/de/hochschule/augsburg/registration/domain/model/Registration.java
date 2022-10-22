@@ -20,6 +20,9 @@ public class Registration {
 
     private final List<SubjectSelection> subjectSelection;
 
+    private UUID registrationWindowId;
+
+
     public void assignStudent(final String student) {
         this.student = student;
     }
@@ -27,6 +30,10 @@ public class Registration {
     public void update(final RegistrationUpdate update) {
         this.subjectSelection.clear();
         this.subjectSelection.addAll(update.getSubjectSelection());
+    }
+
+    public void updateRegistrationWindowId(UUID registrationWindowId){
+        this.registrationWindowId = registrationWindowId;
     }
 
 }

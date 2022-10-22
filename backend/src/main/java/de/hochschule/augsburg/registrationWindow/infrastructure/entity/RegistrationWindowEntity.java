@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.UUID;
 
 @Getter
 @Builder
@@ -21,7 +22,7 @@ public class RegistrationWindowEntity {
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "id", unique = true, nullable = false, updatable = false, length = 36)
-    public String id;
+    public UUID id;
 
     @Column(name = "semester", nullable = false)
     private String semester;

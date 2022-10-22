@@ -5,6 +5,7 @@ import de.hochschule.augsburg.registrationWindow.domain.model.RegistrationWindow
 import de.hochschule.augsburg.registrationWindow.domain.model.RegistrationWindowUpdate;
 import de.hochschule.augsburg.registrationWindow.infrastructure.entity.RegistrationWindowEntity;
 import de.hochschule.augsburg.registrationWindow.infrastructure.repository.RegistrationWindowRepository;
+import de.hochschule.augsburg.subject.infrastructure.repository.SubjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
@@ -13,6 +14,7 @@ import org.camunda.bpm.engine.variable.Variables;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Service to handle registration windows.
@@ -32,6 +34,10 @@ public class RegistrationWindowService {
      */
     public List<RegistrationWindow> getAllRegistrationWindows() {
         return this.registrationWindowMapper.map(this.registrationWindowRepository.findAll());
+    }
+
+    public boolean doesOpenRegistrationWindowNotExist(){
+       return this.registrationWindowRepository.findOpenRegistrationWindow().isEmpty();
     }
 
     /**
@@ -97,5 +103,7 @@ public class RegistrationWindowService {
                 .map(this.registrationWindowMapper::map)
                 .orElseThrow();
     }
+
+
 
 }

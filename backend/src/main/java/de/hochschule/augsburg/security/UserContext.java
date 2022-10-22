@@ -18,4 +18,15 @@ public class UserContext {
         }
     }
 
+    public String getRoleOfLoggedInUser() {
+        if (ldapActive) {
+            final Jwt auth = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return auth.getClaim("role");
+        }else{
+            return "tester";
+        }
+    }
+
+
+
 }

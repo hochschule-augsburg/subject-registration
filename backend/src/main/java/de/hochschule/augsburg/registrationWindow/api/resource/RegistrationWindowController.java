@@ -5,6 +5,7 @@ import de.hochschule.augsburg.registrationWindow.api.transport.NewRegistrationWi
 import de.hochschule.augsburg.registrationWindow.api.transport.RegistrationWindowTO;
 import de.hochschule.augsburg.registrationWindow.api.transport.RegistrationWindowUpdateTO;
 import de.hochschule.augsburg.registrationWindow.domain.model.RegistrationWindow;
+import de.hochschule.augsburg.registrationWindow.domain.model.RegistrationWindowUpdate;
 import de.hochschule.augsburg.registrationWindow.domain.service.RegistrationWindowService;
 import de.hochschule.augsburg.security.UserContext;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,7 +46,12 @@ public class RegistrationWindowController {
     @Operation(summary = "Create a new registration window")
     public ResponseEntity<RegistrationWindowTO> createNewRegistrationWindow(@RequestBody @Valid final NewRegistrationWindowTO newRegistrationWindowTO) {
         log.debug("Received request to create a new registration period: {}", newRegistrationWindowTO);
+        if(!this.registrationWindowService.doesOpenRegistrationWindowNotExist()){// Damit werden auch user Rechte ueberprueft|| this.userContext.getRoleOfLoggedInUser()=='dean'){
+            return ResponseEntity.status(500).build();
+        }
         final RegistrationWindow registrationWindow = this.registrationWindowService.createRegistrationWindow(this.registrationWindowApiMapper.map(newRegistrationWindowTO), this.userContext.getLoggedInUser());
+        final RegistrationWindowUpdate registrationWindowUpdate = new RegistrationWindowUpdate(registrationWindow.getId(), registrationWindow.getStartDate(),registrationWindow.getEndDate(),false);
+        registrationWindow.update(registrationWindowUpdate);
         return ResponseEntity.ok(this.registrationWindowApiMapper.map(registrationWindow));
     }
 
