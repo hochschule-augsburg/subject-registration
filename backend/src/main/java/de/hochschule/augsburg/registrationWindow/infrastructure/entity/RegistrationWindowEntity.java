@@ -1,15 +1,13 @@
 package de.hochschule.augsburg.registrationWindow.infrastructure.entity;
 
+import de.hochschule.augsburg.registrationWindow.domain.model.RegistrationWindowStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @Builder
@@ -31,4 +29,10 @@ public class RegistrationWindowEntity {
 
     @Column(name = "end_date", nullable = false)
     private String endDate;
+
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RegistrationWindowStatus status;
+
+
 }

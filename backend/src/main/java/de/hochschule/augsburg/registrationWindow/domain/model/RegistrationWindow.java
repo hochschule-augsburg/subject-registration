@@ -16,8 +16,12 @@ public class RegistrationWindow {
 
     private String endDate;
 
+    private RegistrationWindowStatus registrationWindowStatus;
+
     public void update(final RegistrationWindowUpdate update) {
         this.startDate = update.getStartDate();
         this.endDate = update.getEndDate();
+        this.registrationWindowStatus = update.getStatus();
+
     }
 }

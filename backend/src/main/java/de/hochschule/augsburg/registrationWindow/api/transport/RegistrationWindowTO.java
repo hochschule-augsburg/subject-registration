@@ -1,5 +1,6 @@
 package de.hochschule.augsburg.registrationWindow.api.transport;
 
+import de.hochschule.augsburg.registrationWindow.domain.model.RegistrationWindowStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,4 +31,8 @@ public class RegistrationWindowTO {
     @NotNull
     @NotBlank
     private String endDate;
+
+    @NotNull
+    @NotBlank
+    private RegistrationWindowStatus status;
 }

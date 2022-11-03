@@ -13,4 +13,6 @@ public class RegistrationWindowUpdate {
     private final String startDate;
 
     private final String endDate;
+
+    private final RegistrationWindowStatus status;
 }
