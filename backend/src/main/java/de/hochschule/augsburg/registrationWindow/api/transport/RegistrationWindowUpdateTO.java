@@ -26,7 +26,4 @@ public class RegistrationWindowUpdateTO {
     @NotBlank
     private String endDate;
 
-    @NotNull
-    @NotBlank
-    private RegistrationWindowStatus status;
 }

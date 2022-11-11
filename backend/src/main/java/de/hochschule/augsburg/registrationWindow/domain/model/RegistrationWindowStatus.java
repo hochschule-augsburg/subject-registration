@@ -4,7 +4,7 @@ public enum RegistrationWindowStatus {
     ACTIVE("active"),
     CLOSED("closed");
     private String value;
-    private RegistrationWindowStatus(String value){
+    RegistrationWindowStatus(String value){
         this.value = value;
     }
     public String getValue() {

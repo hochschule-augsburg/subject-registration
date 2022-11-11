@@ -31,8 +31,4 @@ public class RegistrationWindowTO {
     @NotNull
     @NotBlank
     private String endDate;
-
-    @NotNull
-    @NotBlank
-    private RegistrationWindowStatus status;
 }
