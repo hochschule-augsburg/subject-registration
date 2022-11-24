@@ -13,6 +13,7 @@ import org.camunda.bpm.engine.variable.Variables;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Service to handle registration windows.
@@ -51,7 +52,7 @@ public class RegistrationWindowService {
 //        runtimeService.startProcessInstanceByKey("MeinTollerProzess");
         final RegistrationWindow savedRegistrationWindow = this.saveRegistrationWindow(newRegistrationWindow);
 
-        this.runtimeService.startProcessInstanceByKey("Process_Registration_Window", savedRegistrationWindow.getId(), variables);
+        this.runtimeService.startProcessInstanceByKey("Process_Registration_Window", savedRegistrationWindow.getId().toString(), variables);
 
         return savedRegistrationWindow;
     }
@@ -77,7 +78,7 @@ public class RegistrationWindowService {
      * @param registrationWindowId
      * @param professor
      */
-    public void deleteRegistrationWindow(final String registrationWindowId, final String professor) {
+    public void deleteRegistrationWindow(final UUID registrationWindowId, final String professor) {
         final RegistrationWindow registrationWindow = this.getRegistrationWindow(registrationWindowId);
 
         // TODO is the registrationWindow of the professor with granted access?
@@ -92,7 +93,7 @@ public class RegistrationWindowService {
         return this.registrationWindowMapper.map(savedRegistrationWindow);
     }
 
-    private RegistrationWindow getRegistrationWindow(final String registrationWindowId) {
+    private RegistrationWindow getRegistrationWindow(final UUID registrationWindowId) {
         return this.registrationWindowRepository.findById(registrationWindowId)
                 .map(this.registrationWindowMapper::map)
                 .orElseThrow();

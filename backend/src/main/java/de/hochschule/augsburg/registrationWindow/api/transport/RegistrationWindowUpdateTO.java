@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Getter
 @Builder
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotNull;
 public class RegistrationWindowUpdateTO {
     @NotNull
     @NotBlank
-    private String id;
+    private UUID id;
 
     @NotNull
     @NotBlank

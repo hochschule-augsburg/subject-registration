@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Getter
 @Builder
@@ -18,7 +19,7 @@ import javax.validation.constraints.NotNull;
 public class RegistrationWindowTO {
     @NotNull
     @NotBlank
-    private String id;
+    private UUID id;
 
     @NotNull
     @NotBlank

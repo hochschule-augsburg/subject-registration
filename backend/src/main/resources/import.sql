@@ -150,4 +150,112 @@ INSERT INTO hsa_subject (id, name, professor, CP, description, specialization, s
 
 INSERT INTO hsa_subject (id, name, professor, CP, description, specialization, status, capacity) VALUES (75, 'Web-Technologien', 'Dipl. Designer (FH) Fabian Ziegler', 5, '', 'Medieninformatik (A), Softwareengineering (B)', 'true', '30');
 
-INSERT INTO hsa_subject (id, name, professor, CP, description, specialization, status, capacity) VALUES (76, 'Zertifizierungsmodul', 'Elektrotechnik', 5, '', 'IT-Sicherheit (A), Technische Informatik (C)', 'false', '30');
+INSERT INTO hsa_subject (id, name, professor, CP, description, specialization, status, capacity) VALUES (76, 'Zertifizierungsmodul', 'Elektrotechnik', 5, '', 'IT-Sicherheit(A), Technische Informatik (C)', 'false', '30');
+
+
+
+INSERT INTO hsa_registration_window (id, semester, start_date, end_date, status) VALUES (0, 'Wintersemester 2022/23', '2022-09-26', '2022-10-06', 'active');
+
+INSERT INTO hsa_registration_window (id, semester, start_date, end_date, status) VALUES (1, 'Sommersemester 2022', '2022-03-07', '2022-03-18', 'closed');
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(0,'Tim Buchse',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(1,'Torsten Hoover',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(2,'Markus Brandt',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(3,'Niklas Egger',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(4,'Silke Frey',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(5,'Jürgen Naumann',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(6,'Mario Loewe',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(7,'Torsten Waechter',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(8,'Leonie Koch',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(9,'Luca Goldschmidt',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(10,'Markus Konig',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(11,'Felix Scherer',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(12,'Luca Goldschmidt',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(13,'Doreen Engel',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(14,'Eric Ehrlichmann',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(15,'Benjamin Schuster',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(16,'Ute Eberhardt',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(17,'Tim Kirsch',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(18,'Kristin Schmidt',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(19,'Christina Freitag',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(20,'Kerstin Schweitzer',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(21,'Tanja Nagel',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(22,'Anna Reiniger',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(23,'Benjamin Papst',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(24,'Tobias Lemann',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(25,'Michelle Blau',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(26,'Kerstin Schweitzer',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(27,'Martin Eisenhauer',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(28,'Lisa Hirsch',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(29,'Franziska Huber',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(30,'Stefan Kappel',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(31,'Petra Kohler',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(32,'Doreen Luft',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(33,'Daniel Aachen',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(34,'Christin Eisenhauer',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(35,'Jens Bach',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(36,'Jana Trommler',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(37,'Martina Rothstein',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(38,'Katharina Grunewald',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(39,'Wolfgang Herz',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(40,'Markus Loewe',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(41,'Martina Saenger',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(42,'Ralph Theiss',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(43,'Leon Kaestner',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(44,'Ute Baumgartner',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(45,'Kerstin Muench',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(46,'Kristian Lehmann',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(47,'Ursula Vogt',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(48,'Lea Weissmuller',0);
+
+INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(49,'Katja Finkel',0);
+
+INSERT INTO hsa_registration (id,student, registration_window_id) VALUES(50,'Lucas Fried',0)
