@@ -1,10 +1,12 @@
 package de.hochschule.augsburg.registrationWindow.api.transport;
 
+import de.hochschule.augsburg.registrationWindow.domain.model.RegistrationWindowStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Getter
 @Builder
@@ -15,7 +17,7 @@ import javax.validation.constraints.NotNull;
 public class RegistrationWindowUpdateTO {
     @NotNull
     @NotBlank
-    private String id;
+    private UUID id;
 
     @NotNull
     @NotBlank
@@ -24,4 +26,5 @@ public class RegistrationWindowUpdateTO {
     @NotNull
     @NotBlank
     private String endDate;
+
 }
