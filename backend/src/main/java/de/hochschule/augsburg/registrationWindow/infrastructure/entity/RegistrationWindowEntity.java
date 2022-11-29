@@ -1,7 +1,5 @@
 package de.hochschule.augsburg.registrationWindow.infrastructure.entity;
 
-import de.hochschule.augsburg.registration.infrastructure.entity.RegistrationEntity;
-import de.hochschule.augsburg.registration.infrastructure.entity.SubjectSelectionEntity;
 import de.hochschule.augsburg.registrationWindow.domain.model.RegistrationWindowStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Date;
 import java.util.UUID;
 
 @Getter
@@ -18,6 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "hsa_registration_window")
+@Table(name = "hsa_registration_window")
 public class RegistrationWindowEntity {
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -28,16 +27,17 @@ public class RegistrationWindowEntity {
     @Column(name = "semester", nullable = false)
     private String semester;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_date", nullable = false)
-    private String startDate;
+    private Date startDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "end_date", nullable = false)
-    private String endDate;
+    private Date endDate;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private RegistrationWindowStatus status;
-
 
 
 }

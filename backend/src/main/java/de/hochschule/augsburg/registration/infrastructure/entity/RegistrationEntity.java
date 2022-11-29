@@ -1,7 +1,5 @@
 package de.hochschule.augsburg.registration.infrastructure.entity;
 
-import de.hochschule.augsburg.registrationWindow.domain.model.RegistrationWindow;
-import de.hochschule.augsburg.registrationWindow.infrastructure.entity.RegistrationWindowEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "hsa_registration")
+@Table(name = "hsa_registration")
 public class RegistrationEntity {
 
     @Id
