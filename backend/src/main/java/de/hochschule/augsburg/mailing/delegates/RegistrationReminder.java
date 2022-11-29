@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import de.hochschule.augsburg.mailing.service.MailingService;
 import de.hochschule.augsburg.mailing.utility.MailType;
+import de.hochschule.augsburg.mailing.utility.Property;
 
 @Named
 public class RegistrationReminder implements JavaDelegate {
@@ -20,7 +21,7 @@ public class RegistrationReminder implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
         //Here is DB request needed to get the list of Students,
         //but at the moment it's just a hardcoded email.
-        String studentMail="mustermann@gmail.com";
+        String studentMail= Property.getMailingProperty().getProperty("mail.to");
         mailingService.sendEmail(studentMail,mailType,mailContent);
     }
 

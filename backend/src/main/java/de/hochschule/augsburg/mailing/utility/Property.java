@@ -8,8 +8,16 @@ import java.util.Properties;
 import camundajar.impl.scala.sys.Prop;
 
 public final class Property {
-    public final static String APPLICATION_PROPERTY_PATH = "backend/src/main/resources/application.properties";
-    public final static String MAILING_PROPERTY_PATH = "backend/src/main/resources/mailing.properties";
+    public static String APPLICATION_PROPERTY_PATH = "backend/src/main/resources/application.properties";
+    public static String MAILING_PROPERTY_PATH = "backend/src/main/resources/mailing.properties";
+
+    public static void setApplicationPropertyPath(String applicationPropertyPath) {
+        APPLICATION_PROPERTY_PATH = applicationPropertyPath;
+    }
+
+    public static void setMailingPropertyPath(String mailingPropertyPath) {
+        MAILING_PROPERTY_PATH = mailingPropertyPath;
+    }
 
     public static Properties getMailingProperty() {
         return getProperties(MAILING_PROPERTY_PATH);
