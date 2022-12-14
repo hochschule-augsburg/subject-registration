@@ -152,8 +152,6 @@ INSERT INTO hsa_subject (id, name, professor, CP, description, specialization, s
 
 INSERT INTO hsa_subject (id, name, professor, CP, description, specialization, status, capacity) VALUES (76, 'Zertifizierungsmodul', 'Elektrotechnik', 5, '', 'IT-Sicherheit(A), Technische Informatik (C)', 'false', '30');
 
-
-
 INSERT INTO hsa_registration_window (id, semester, start_date, end_date, status) VALUES (0, 'Wintersemester 2022/23', '2022-09-26', '2022-10-06', 'active');
 
 INSERT INTO hsa_registration_window (id, semester, start_date, end_date, status) VALUES (1, 'Sommersemester 2022', '2022-03-07', '2022-03-18', 'closed');
@@ -259,3 +257,6 @@ INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(48,'Lea 
 INSERT INTO hsa_registration (id,student,registration_window_id) VALUES(49,'Katja Finkel',0);
 
 INSERT INTO hsa_registration (id,student, registration_window_id) VALUES(50,'Lucas Fried',0)
+
+
+

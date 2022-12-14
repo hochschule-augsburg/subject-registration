@@ -14,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "hsa_subject")
+@Table(name = "hsa_subject" )
 public class SubjectEntity {
 
     @Id

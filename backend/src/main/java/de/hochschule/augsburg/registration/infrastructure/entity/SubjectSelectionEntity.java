@@ -14,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "hsa_subject_selection")
+@Table(name = "hsa_subject_selection")
 public class SubjectSelectionEntity {
 
     @Id
@@ -22,10 +23,11 @@ public class SubjectSelectionEntity {
     @Column(name = "id", unique = true, nullable = false, updatable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name="subject_id", nullable = false, columnDefinition = "BINARY(16)")
-    private UUID subject;
+    @Column(name = "subject_id", nullable = false, columnDefinition = "BINARY(16)")
+    private UUID subjectId;
 
-    //Registration ID
+    @Column(name = "registration_id", columnDefinition = "BINARY(16)")
+    private UUID registrationId;
 
     @Column(name = "points", nullable = false)
     private Integer points;
