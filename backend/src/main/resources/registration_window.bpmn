@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0icdy1v" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0icdy1v" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0">
   <bpmn:process id="Process_Registration_Window" isExecutable="true">
     <bpmn:endEvent id="Event_0wyx2ji">
       <bpmn:incoming>Flow_1851o77</bpmn:incoming>
@@ -70,10 +70,6 @@
       <bpmn:incoming>Flow_0es92iq</bpmn:incoming>
       <bpmn:outgoing>Flow_0lvol67</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_Registration_Lock" name="Lock registrations">
-      <bpmn:incoming>Flow_0zo90af</bpmn:incoming>
-      <bpmn:outgoing>Flow_0scy5fh</bpmn:outgoing>
-    </bpmn:userTask>
     <bpmn:userTask id="Activity_Registration_Algorithm" name="Calculate registrations">
       <bpmn:incoming>Flow_1y6q87b</bpmn:incoming>
       <bpmn:outgoing>Flow_1u449fn</bpmn:outgoing>
@@ -82,6 +78,10 @@
       <bpmn:incoming>Flow_0xbquxp</bpmn:incoming>
       <bpmn:outgoing>Flow_1851o77</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_Registration_Lock" name="Lock registrations" camunda:delegateExpression="${LockRegistrationWindow}">
+      <bpmn:incoming>Flow_0zo90af</bpmn:incoming>
+      <bpmn:outgoing>Flow_0scy5fh</bpmn:outgoing>
+    </bpmn:serviceTask>
     <bpmn:textAnnotation id="TextAnnotation_02sfxza">
       <bpmn:text>Dekan</bpmn:text>
     </bpmn:textAnnotation>
@@ -197,15 +197,6 @@
           <dc:Bounds x="1522" y="305" width="63" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_02sfxza_di" bpmnElement="TextAnnotation_02sfxza">
-        <dc:Bounds x="160" y="180" width="100" height="30" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1id71ta_di" bpmnElement="TextAnnotation_1id71ta">
-        <dc:Bounds x="760" y="120" width="120" height="64" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1bkoz1n_di" bpmnElement="TextAnnotation_1bkoz1n">
-        <dc:Bounds x="330" y="148" width="150" height="54" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0bnllpw_di" bpmnElement="Activity_Mail_Registration_Soon">
         <dc:Bounds x="370" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -215,14 +206,23 @@
       <bpmndi:BPMNShape id="Activity_0ca2ocj_di" bpmnElement="Activity_Mail_Registration_start">
         <dc:Bounds x="780" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_04widbf_di" bpmnElement="Activity_Registration_Lock">
-        <dc:Bounds x="1100" y="240" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0txrnoj_di" bpmnElement="Activity_Registration_Algorithm">
         <dc:Bounds x="1310" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0bgp6wt_di" bpmnElement="Activity_Mail_Results_Available">
         <dc:Bounds x="1610" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_02sfxza_di" bpmnElement="TextAnnotation_02sfxza">
+        <dc:Bounds x="160" y="180" width="100" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1id71ta_di" bpmnElement="TextAnnotation_1id71ta">
+        <dc:Bounds x="760" y="120" width="120" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1bkoz1n_di" bpmnElement="TextAnnotation_1bkoz1n">
+        <dc:Bounds x="330" y="148" width="150" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_17skbl3_di" bpmnElement="Activity_Registration_Lock">
+        <dc:Bounds x="1100" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0fgi7vy_di" bpmnElement="Association_0fgi7vy">
         <di:waypoint x="260" y="265" />

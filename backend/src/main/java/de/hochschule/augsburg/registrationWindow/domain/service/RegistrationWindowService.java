@@ -44,12 +44,11 @@ public class RegistrationWindowService {
      */
     public RegistrationWindow createRegistrationWindow(final RegistrationWindow newRegistrationWindow, final String professor) {
 
-        //TODO only professor with granted access can create registration window
-
         VariableMap variables = Variables.createVariables();
+        variables.putValue("registration_window_start",newRegistrationWindow.getStartDate());
+        variables.putValue("registration_window_end",newRegistrationWindow.getEndDate());
+        newRegistrationWindow.open();
 
-        //TODO start a process
-//        runtimeService.startProcessInstanceByKey("MeinTollerProzess");
         final RegistrationWindow savedRegistrationWindow = this.saveRegistrationWindow(newRegistrationWindow);
 
         this.runtimeService.startProcessInstanceByKey("Process_Registration_Window", savedRegistrationWindow.getId().toString(), variables);
@@ -97,6 +96,10 @@ public class RegistrationWindowService {
         return this.registrationWindowRepository.findById(registrationWindowId)
                 .map(this.registrationWindowMapper::map)
                 .orElseThrow();
+    }
+
+    public boolean doesOpenRegistrationWindowNotExist(){
+        return this.registrationWindowRepository.findOpenRegistrationWindow().isEmpty();
     }
 
 }

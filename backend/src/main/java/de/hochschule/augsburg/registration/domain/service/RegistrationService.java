@@ -7,6 +7,8 @@ import de.hochschule.augsburg.registration.domain.model.SubjectSelection;
 import de.hochschule.augsburg.registration.domain.process.RegistrationProcessVariables;
 import de.hochschule.augsburg.registration.infrastructure.entity.RegistrationEntity;
 import de.hochschule.augsburg.registration.infrastructure.repository.RegistrationRepository;
+import de.hochschule.augsburg.registrationWindow.infrastructure.entity.RegistrationWindowEntity;
+import de.hochschule.augsburg.registrationWindow.infrastructure.repository.RegistrationWindowRepository;
 import de.hochschule.augsburg.subject.domain.service.SubjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +34,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RegistrationService {
-
+    private final RegistrationWindowRepository registrationWindowRepository;
     private final RegistrationRepository registrationRepository;
     private final RegistrationMapper registrationMapper;
     private final SubjectService subjectService;
@@ -88,8 +90,9 @@ public class RegistrationService {
         newRegistration.getSubjectSelection().forEach(subjectSelection -> {
             this.subjectService.validateSubject(subjectSelection.getSubject());
         });
+        RegistrationWindowEntity registrationWindow = registrationWindowRepository.findOpenRegistrationWindow().get(0);
 
-
+        newRegistration.updateRegistrationWindowId(registrationWindow.getId());
         newRegistration.assignStudent(student);
         final Registration savedRegistration = this.saveRegistration(newRegistration);
 
