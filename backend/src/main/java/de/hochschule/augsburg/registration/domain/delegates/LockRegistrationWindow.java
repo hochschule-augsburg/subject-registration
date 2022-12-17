@@ -19,7 +19,7 @@ public class LockRegistrationWindow implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        RegistrationWindowEntity registrationWindowEntity =registrationWindowRepository.findOpenRegistrationWindow().get(0);
+        RegistrationWindowEntity registrationWindowEntity =registrationWindowRepository.findOpenRegistrationWindow();
         RegistrationWindow registrationWindow=registrationWindowMapper.map(registrationWindowEntity);
         registrationWindow.close();
         registrationWindowEntity = registrationWindowMapper.map(registrationWindow);

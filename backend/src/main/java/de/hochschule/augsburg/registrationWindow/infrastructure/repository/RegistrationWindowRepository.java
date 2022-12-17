@@ -9,5 +9,5 @@ import java.util.UUID;
 
 public interface RegistrationWindowRepository extends JpaRepository<RegistrationWindowEntity, UUID> {
     @Query("SELECT r FROM hsa_registration_window r WHERE r.status= True)")
-    List<RegistrationWindowEntity> findOpenRegistrationWindow();
+    RegistrationWindowEntity findOpenRegistrationWindow();
 }

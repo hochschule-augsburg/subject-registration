@@ -90,7 +90,7 @@ public class RegistrationService {
         newRegistration.getSubjectSelection().forEach(subjectSelection -> {
             this.subjectService.validateSubject(subjectSelection.getSubject());
         });
-        RegistrationWindowEntity registrationWindow = registrationWindowRepository.findOpenRegistrationWindow().get(0);
+        RegistrationWindowEntity registrationWindow = registrationWindowRepository.findOpenRegistrationWindow();
 
         newRegistration.updateRegistrationWindowId(registrationWindow.getId());
         newRegistration.assignStudent(student);

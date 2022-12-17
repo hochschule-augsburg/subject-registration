@@ -99,7 +99,7 @@ public class RegistrationWindowService {
     }
 
     public boolean doesOpenRegistrationWindowNotExist(){
-        return this.registrationWindowRepository.findOpenRegistrationWindow().isEmpty();
+        return this.registrationWindowRepository.findOpenRegistrationWindow()==null;
     }
 
 }
