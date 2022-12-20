@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -68,14 +67,15 @@ public class RegistrationWindowController {
 
     @Transactional
     @PostMapping
+    //@Secured({"ROLE_hsa-ROLE_professoren", "ROLE_lehrbeauftr"})
     @Operation(summary = "Create a new registration window")
     public ResponseEntity<RegistrationWindowTO> createNewRegistrationWindow(@RequestBody @Valid final NewRegistrationWindowTO newRegistrationWindowTO) {
         log.debug("Received request to create a new registration period: {}", newRegistrationWindowTO);
-        if(!this.registrationWindowService.doesOpenRegistrationWindowNotExist()&&!securityService.isProfessor()){// Damit werden auch user Rechte ueberprueft
-            return ResponseEntity.status(500).build();
+        if (!this.securityService.isProfessor()) {// Damit werden auch user Rechte ueberprueft
+            return ResponseEntity.status(403).build();
         }
         final RegistrationWindow registrationWindow = this.registrationWindowService.createRegistrationWindow(this.registrationWindowApiMapper.map(newRegistrationWindowTO), this.userContext.getLoggedInUser());
-        final RegistrationWindowUpdate registrationWindowUpdate = new RegistrationWindowUpdate(registrationWindow.getId(), registrationWindow.getStartDate(),registrationWindow.getEndDate());
+        final RegistrationWindowUpdate registrationWindowUpdate = new RegistrationWindowUpdate(registrationWindow.getId(), registrationWindow.getStartDate(), registrationWindow.getEndDate());
         registrationWindow.update(registrationWindowUpdate);
         return ResponseEntity.ok(this.registrationWindowApiMapper.map(registrationWindow));
     }
