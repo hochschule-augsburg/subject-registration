@@ -399,4 +399,4 @@ gradle-app.setting
 
 # gcp
 mco-bucket.json
-/subject-registration.iml
+subject-registration.iml
