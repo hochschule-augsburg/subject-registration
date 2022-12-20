@@ -39,17 +39,20 @@ public class RegistrationWindowService {
      * Create a new Registration Window.
      *
      * @param newRegistrationWindow Registration window that is created
-     * @param professor         Professor that starts the new registration window
+     * @param professor             Professor that starts the new registration window
      * @return the new registration window
      */
     public RegistrationWindow createRegistrationWindow(final RegistrationWindow newRegistrationWindow, final String professor) {
 
-        //TODO only professor with granted access can create registration window
+        if (this.doesOpenRegistrationWindowNotExist()) {
+            throw new RuntimeException("Registration window already open");
+        }
 
-        VariableMap variables = Variables.createVariables();
+        final VariableMap variables = Variables.createVariables();
+        variables.putValue("registration_window_start", newRegistrationWindow.getStartDate());
+        variables.putValue("registration_window_end", newRegistrationWindow.getEndDate());
+        newRegistrationWindow.open();
 
-        //TODO start a process
-//        runtimeService.startProcessInstanceByKey("MeinTollerProzess");
         final RegistrationWindow savedRegistrationWindow = this.saveRegistrationWindow(newRegistrationWindow);
 
         this.runtimeService.startProcessInstanceByKey("Process_Registration_Window", savedRegistrationWindow.getId().toString(), variables);
@@ -61,7 +64,7 @@ public class RegistrationWindowService {
      * Update an existing registration window.
      *
      * @param registrationWindowUpdate Update that is applieded
-     * @param professor            Id of the professor
+     * @param professor                Id of the professor
      * @return the updated registrationWindow
      */
     public RegistrationWindow updateRegistrationWindow(final RegistrationWindowUpdate registrationWindowUpdate, final String professor) {
@@ -75,6 +78,7 @@ public class RegistrationWindowService {
 
     /**
      * Delete an existing registration window
+     *
      * @param registrationWindowId
      * @param professor
      */
@@ -84,6 +88,15 @@ public class RegistrationWindowService {
         // TODO is the registrationWindow of the professor with granted access?
 
         this.registrationWindowRepository.deleteById(registrationWindow.getId());
+    }
+
+
+    public void lockRegistrationWindow() {
+        RegistrationWindowEntity registrationWindowEntity = this.registrationWindowRepository.findOpenRegistrationWindow();
+        final RegistrationWindow registrationWindow = this.registrationWindowMapper.map(registrationWindowEntity);
+        registrationWindow.close();
+        registrationWindowEntity = this.registrationWindowMapper.map(registrationWindow);
+        this.registrationWindowRepository.save(registrationWindowEntity);
     }
 
     // Helper Methods
@@ -97,6 +110,10 @@ public class RegistrationWindowService {
         return this.registrationWindowRepository.findById(registrationWindowId)
                 .map(this.registrationWindowMapper::map)
                 .orElseThrow();
+    }
+
+    public boolean doesOpenRegistrationWindowNotExist() {
+        return this.registrationWindowRepository.findOpenRegistrationWindow() == null;
     }
 
 }

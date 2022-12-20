@@ -38,4 +38,8 @@ public class Registration {
         this.status = RegistrationStatus.CLOSED;
     }
 
+    public void updateRegistrationWindowId(UUID registrationWindowId){
+        this.registrationWindowId=registrationWindowId;
+    }
+
 }
