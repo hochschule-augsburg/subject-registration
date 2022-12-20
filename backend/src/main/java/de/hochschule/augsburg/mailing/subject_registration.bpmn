@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_078pogx" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="Process_Register_Subject" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Enter subjects">
+      <bpmn:outgoing>Flow_0hg578f</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0hg578f" sourceRef="StartEvent_1" targetRef="UserTask_Subject_Update" />
+    <bpmn:userTask id="UserTask_Subject_Update" name="Update subjects" camunda:assignee="${student}">
+      <bpmn:incoming>Flow_0hg578f</bpmn:incoming>
+      <bpmn:incoming>Flow_1c39b8w</bpmn:incoming>
+      <bpmn:outgoing>Flow_1c39b8w</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:boundaryEvent id="ErrorEvent_Registration_Cancel" name="Cacel Register" attachedToRef="UserTask_Subject_Update">
+      <bpmn:outgoing>Flow_12v69y5</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0a1okdp" errorRef="Error_0c5hmxv" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_12v69y5" sourceRef="ErrorEvent_Registration_Cancel" targetRef="Activity_Cancel_Registration" />
+    <bpmn:endEvent id="Event_07ytur5">
+      <bpmn:incoming>Flow_1lv184b</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1lv184b" sourceRef="Activity_Cancel_Registration" targetRef="Event_07ytur5" />
+    <bpmn:sequenceFlow id="Flow_1c39b8w" sourceRef="UserTask_Subject_Update" targetRef="UserTask_Subject_Update" />
+    <bpmn:subProcess id="Activity_0ufz5ub" triggeredByEvent="true">
+      <bpmn:startEvent id="SignalEvent_RegisterWindow_Timeout" name="Register window timeout">
+        <bpmn:outgoing>Flow_0g5ocue</bpmn:outgoing>
+        <bpmn:signalEventDefinition id="SignalEventDefinition_1qvv31r" signalRef="Signal_1dy2iq6" />
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_0g5ocue" sourceRef="SignalEvent_RegisterWindow_Timeout" targetRef="SignalEvent_Results_Available" />
+      <bpmn:endEvent id="Event_0gaszo4">
+        <bpmn:incoming>Flow_0gbej96</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_143nfji" sourceRef="SignalEvent_Results_Available" targetRef="UserTask_Confirm_Results" />
+      <bpmn:userTask id="UserTask_Confirm_Results" name="Confirm results" camunda:assignee="${student}">
+        <bpmn:incoming>Flow_143nfji</bpmn:incoming>
+        <bpmn:outgoing>Flow_1pa64o9</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:intermediateCatchEvent id="SignalEvent_Results_Available" name="Results available">
+        <bpmn:incoming>Flow_0g5ocue</bpmn:incoming>
+        <bpmn:outgoing>Flow_143nfji</bpmn:outgoing>
+        <bpmn:signalEventDefinition id="SignalEventDefinition_11o5kor" signalRef="Signal_0yy2t76" />
+      </bpmn:intermediateCatchEvent>
+      <bpmn:boundaryEvent id="TimeEvent_Results_Fixed" name="Results confirmation timeout" attachedToRef="UserTask_Confirm_Results">
+        <bpmn:outgoing>Flow_0gbej96</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="TimerEventDefinition_1oqka0l">
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P7D</bpmn:timeDuration>
+        </bpmn:timerEventDefinition>
+      </bpmn:boundaryEvent>
+      <bpmn:sequenceFlow id="Flow_0gbej96" sourceRef="TimeEvent_Results_Fixed" targetRef="Event_0gaszo4" />
+      <bpmn:endEvent id="Event_0etxssx">
+        <bpmn:incoming>Flow_1pa64o9</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1pa64o9" sourceRef="UserTask_Confirm_Results" targetRef="Event_0etxssx" />
+    </bpmn:subProcess>
+    <bpmn:serviceTask id="Activity_Cancel_Registration" name="Execute cancel registrtaion " camunda:asyncBefore="true" camunda:delegateExpression="${cancellationDelegate}">
+      <bpmn:incoming>Flow_12v69y5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lv184b</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:signal id="Signal_1dy2iq6" name="Signal_RegisterWindow_Timeout" />
+  <bpmn:error id="Error_0c5hmxv" name="Error_Registration_Cancel" errorCode="registrationCancel" />
+  <bpmn:signal id="Signal_0yy2t76" name="SignalEvent_Results_Available" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Register_Subject">
+      <bpmndi:BPMNEdge id="Flow_1c39b8w_di" bpmnElement="Flow_1c39b8w">
+        <di:waypoint x="560" y="160" />
+        <di:waypoint x="610" y="160" />
+        <di:waypoint x="610" y="80" />
+        <di:waypoint x="510" y="80" />
+        <di:waypoint x="510" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lv184b_di" bpmnElement="Flow_1lv184b">
+        <di:waypoint x="740" y="260" />
+        <di:waypoint x="812" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12v69y5_di" bpmnElement="Flow_12v69y5">
+        <di:waypoint x="480" y="218" />
+        <di:waypoint x="480" y="260" />
+        <di:waypoint x="640" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hg578f_di" bpmnElement="Flow_0hg578f">
+        <di:waypoint x="338" y="160" />
+        <di:waypoint x="460" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="302" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="285" y="185" width="71" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_105333m_di" bpmnElement="UserTask_Subject_Update">
+        <dc:Bounds x="460" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07ytur5_di" bpmnElement="Event_07ytur5">
+        <dc:Bounds x="812" y="242" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rc9cpk_di" bpmnElement="Activity_0ufz5ub" isExpanded="true">
+        <dc:Bounds x="160" y="340" width="850" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0gbej96_di" bpmnElement="Flow_0gbej96">
+        <di:waypoint x="640" y="518" />
+        <di:waypoint x="640" y="590" />
+        <di:waypoint x="762" y="590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_143nfji_di" bpmnElement="Flow_143nfji">
+        <di:waypoint x="478" y="460" />
+        <di:waypoint x="570" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g5ocue_di" bpmnElement="Flow_0g5ocue">
+        <di:waypoint x="348" y="460" />
+        <di:waypoint x="442" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pa64o9_di" bpmnElement="Flow_1pa64o9">
+        <di:waypoint x="670" y="460" />
+        <di:waypoint x="762" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_08gaeqs_di" bpmnElement="SignalEvent_RegisterWindow_Timeout">
+        <dc:Bounds x="312" y="442" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="293" y="485" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0aoqwl8_di" bpmnElement="UserTask_Confirm_Results">
+        <dc:Bounds x="570" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1io8nl6_di" bpmnElement="SignalEvent_Results_Available">
+        <dc:Bounds x="442" y="442" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="420" y="485" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0etxssx_di" bpmnElement="Event_0etxssx">
+        <dc:Bounds x="762" y="442" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0gaszo4_di" bpmnElement="Event_0gaszo4">
+        <dc:Bounds x="762" y="572" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1jkftlk_di" bpmnElement="TimeEvent_Results_Fixed">
+        <dc:Bounds x="622" y="482" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="613" y="525" width="60" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0y1uypk_di" bpmnElement="Activity_Cancel_Registration">
+        <dc:Bounds x="640" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_06hs2pr_di" bpmnElement="ErrorEvent_Registration_Cancel">
+        <dc:Bounds x="462" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="446" y="225" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
