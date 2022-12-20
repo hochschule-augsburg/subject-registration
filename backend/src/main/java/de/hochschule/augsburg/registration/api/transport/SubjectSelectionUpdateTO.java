@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Information to a specific subject selection")
+@Schema(description = "Data to update subject selection")
 public class SubjectSelectionUpdateTO {
     
     @NotNull
