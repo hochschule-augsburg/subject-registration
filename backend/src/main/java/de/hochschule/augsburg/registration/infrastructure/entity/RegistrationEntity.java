@@ -15,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "hsa_registration")
+@Table(name = "hsa_registration")
 public class RegistrationEntity {
 
     @Id
@@ -30,4 +31,6 @@ public class RegistrationEntity {
     @JoinColumn(name = "registration_id")
     private List<SubjectSelectionEntity> subjectSelection;
 
+    @Column(name = "registration_window_id", columnDefinition = "BINARY(16)")
+    private UUID registrationWindowId;
 }

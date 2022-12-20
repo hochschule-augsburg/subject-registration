@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Validated
@@ -63,7 +64,7 @@ public class RegistrationWindowController {
     @Transactional
     @DeleteMapping("/{registrationWindowId}")
     @Operation(summary = "Delete an existing registration window")
-    public ResponseEntity<Void> deleteRegistrationWindow(@PathVariable("registrationWindowId") final String registrationPeriodId) {
+    public ResponseEntity<Void> deleteRegistrationWindow(@PathVariable("registrationWindowId") final UUID registrationPeriodId) {
         log.debug("Received request to delete the registration period with the id '{}'", registrationPeriodId);
         this.registrationWindowService.deleteRegistrationWindow(registrationPeriodId, this.userContext.getLoggedInUser());
         return ResponseEntity.ok().build();

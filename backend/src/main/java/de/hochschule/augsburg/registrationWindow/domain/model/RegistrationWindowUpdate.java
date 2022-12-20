@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Getter
 @Builder
 @AllArgsConstructor
 public class RegistrationWindowUpdate {
-    private final String id;
+    private final UUID id;
 
     private final String startDate;
 

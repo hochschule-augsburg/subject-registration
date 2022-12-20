@@ -150,7 +150,7 @@ function MyRegistrations() {
                 .createNewRegistration({
                     student: user.idTokenParsed!.preferred_username,
                     subjectSelection: arr,
-                })
+                }, getRequestHeaders(user))
                 .then((response) => {
                     console.log("successful call");
                 })
