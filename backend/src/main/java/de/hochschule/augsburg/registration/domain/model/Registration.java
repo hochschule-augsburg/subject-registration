@@ -20,13 +20,22 @@ public class Registration {
 
     private final List<SubjectSelection> subjectSelection;
 
+    @Builder.Default
+    private RegistrationStatus status = RegistrationStatus.OPEN;
+
     public void assignStudent(final String student) {
         this.student = student;
     }
 
     public void update(final RegistrationUpdate update) {
         this.subjectSelection.clear();
-        this.subjectSelection.addAll(update.getSubjectSelection());
+        update.getSubjectSelection().stream()
+                .map(SubjectSelection::new)
+                .forEach(this.subjectSelection::add);
+    }
+
+    public void close() {
+        this.status = RegistrationStatus.CLOSED;
     }
 
 }

@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -39,14 +38,14 @@ public class RegistrationController {
     @Operation(summary = "Get list of all Registrations")
     public ResponseEntity<List<RegistrationTO>> getAllRegistrations() {
         log.debug("Received request to get all registrations");
-        final List<Registration> allProjects = this.registrationService.getAllRegistrations(userContext.getLoggedInUser());
+        final List<Registration> allProjects = this.registrationService.getAllRegistrations(this.userContext.getLoggedInUser());
         return ResponseEntity.ok().body(this.registrationApiMapper.map(allProjects));
     }
 
     @GetMapping("/{uid}")
     @Transactional(readOnly = true)
     @Operation(summary = "Get registration by student")
-    public ResponseEntity<RegistrationTO> getRegistration(@PathVariable String uid ) {
+    public ResponseEntity<RegistrationTO> getRegistration(@PathVariable final String uid) {
         log.debug("Received request to get all registrations");
         final Registration registration = this.registrationService.getRegistrationByStudent(uid);
         return ResponseEntity.ok().body(this.registrationApiMapper.map(registration));
@@ -57,7 +56,7 @@ public class RegistrationController {
     @Operation(summary = "Create a new registration")
     public ResponseEntity<RegistrationTO> createNewRegistration(@RequestBody @Valid final NewRegistrationTO newRegistrationTO) {
         log.debug("Received request to create a new registration: {}", newRegistrationTO);
-        final Registration registration = this.registrationService.createRegistration(this.registrationApiMapper.map(newRegistrationTO), newRegistrationTO.getStudent());
+        final Registration registration = this.registrationService.createRegistration(this.registrationApiMapper.map(newRegistrationTO), this.userContext.getLoggedInUser(), this.userContext.getLoggedInUserMail());
         return ResponseEntity.ok(this.registrationApiMapper.map(registration));
     }
 

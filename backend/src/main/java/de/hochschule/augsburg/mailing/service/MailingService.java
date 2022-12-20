@@ -1,39 +1,32 @@
 package de.hochschule.augsburg.mailing.service;
 
-import java.util.Date;
-
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import org.springframework.stereotype.Service;
-
 import de.hochschule.augsburg.mailing.utility.MailType;
 import de.hochschule.augsburg.mailing.utility.Property;
+import org.springframework.stereotype.Service;
+
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Date;
 
 @Service("mailService")
 public class MailingService {
 
-
-    public void sendEmail(String studentMail, MailType mailType, String content) {
+    public void sendEmail(final String studentMail, final MailType mailType, final String content) {
         try {
 
             System.out.println("TLSEmail Start");
             //create Authenticator object to pass in Session.getInstance argument
-            Session session = Session.getInstance(Property.getMailingProperty(), setupAuthenticator());
+            final Session session = Session.getInstance(Property.getMailingProperty(), this.setupAuthenticator());
 
-            MimeMessage msg = setupMessageDetails(session, studentMail, mailType.toString(), content);
+            final MimeMessage msg = this.setupMessageDetails(session, studentMail, mailType.toString(), content);
 
             Transport.send(msg);
 
             System.out.println("EMail Sent Successfully!!");
 
 
-        } catch (MessagingException e) {
+        } catch (final MessagingException e) {
             e.printStackTrace();
         }
     }
@@ -49,9 +42,9 @@ public class MailingService {
         };
     }
 
-    private MimeMessage setupMessageDetails(Session session, String studentMail, String subject,
-            String content) throws MessagingException {
-        MimeMessage msg = new MimeMessage(session);
+    private MimeMessage setupMessageDetails(final Session session, final String studentMail, final String subject,
+                                            final String content) throws MessagingException {
+        final MimeMessage msg = new MimeMessage(session);
         //set message headers
         msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
         msg.addHeader("format", "flowed");
