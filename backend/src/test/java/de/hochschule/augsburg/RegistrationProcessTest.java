@@ -19,7 +19,7 @@ public class RegistrationProcessTest {
             .build();
 
     @Test
-    @Disabled
+    //@Disabled
     @Deployment(resources = {"subject_registration.bpmn"})
     public void shouldExecuteHappyPath() {
         // Given we create a new process instance
