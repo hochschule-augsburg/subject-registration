@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_078pogx" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_078pogx" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:process id="Process_Register_Subject" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="Enter subjects">
       <bpmn:outgoing>Flow_161pewc</bpmn:outgoing>
@@ -16,11 +16,11 @@
       <bpmn:signalEventDefinition id="SignalEventDefinition_1ukc7cs" signalRef="Signal_0yy2t76" />
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_0cc9w07" sourceRef="Gateway_0hep1dd" targetRef="Event_053bcig" />
-    <bpmn:sequenceFlow id="Flow_0rbk1dc" sourceRef="Event_053bcig" targetRef="Activity_1sm2fug" />
+    <bpmn:sequenceFlow id="Flow_0rbk1dc" sourceRef="Event_053bcig" targetRef="Send_Registration_Result" />
     <bpmn:endEvent id="Event_07dzbsj">
       <bpmn:incoming>Flow_0vjvkuw</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1c2y9xf" sourceRef="Activity_1sm2fug" targetRef="Activity_1eec02c" />
+    <bpmn:sequenceFlow id="Flow_1c2y9xf" sourceRef="Send_Registration_Result" targetRef="Close_Registration" />
     <bpmn:intermediateCatchEvent id="Event_1iaercn" name="Cancel Registration">
       <bpmn:incoming>Flow_1c836r6</bpmn:incoming>
       <bpmn:outgoing>Flow_0zqoa38</bpmn:outgoing>
@@ -31,12 +31,12 @@
       <bpmn:incoming>Flow_0zqoa38</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0zqoa38" sourceRef="Event_1iaercn" targetRef="Event_1q3qmvj" />
-    <bpmn:serviceTask id="Activity_1sm2fug" name="Send registration result" camunda:asyncBefore="true" camunda:delegateExpression="${registrationResultsMailing}">
+    <bpmn:serviceTask id="Send_Registration_Result" name="Send registration result" camunda:asyncBefore="true" camunda:delegateExpression="${registrationResultsMailing}">
       <bpmn:incoming>Flow_0rbk1dc</bpmn:incoming>
       <bpmn:outgoing>Flow_1c2y9xf</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0vjvkuw" sourceRef="Activity_1eec02c" targetRef="Event_07dzbsj" />
-    <bpmn:serviceTask id="Activity_1eec02c" name="Close registration" camunda:asyncBefore="true" camunda:delegateExpression="${closeRegistrationDelegate}">
+    <bpmn:sequenceFlow id="Flow_0vjvkuw" sourceRef="Close_Registration" targetRef="Event_07dzbsj" />
+    <bpmn:serviceTask id="Close_Registration" name="Close registration" camunda:asyncBefore="true" camunda:delegateExpression="${closeRegistrationDelegate}">
       <bpmn:incoming>Flow_1c2y9xf</bpmn:incoming>
       <bpmn:outgoing>Flow_0vjvkuw</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -47,34 +47,34 @@
   <bpmn:message id="Message_3m45upu" name="cancel_registration" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Register_Subject">
-      <bpmndi:BPMNEdge id="Flow_161pewc_di" bpmnElement="Flow_161pewc">
-        <di:waypoint x="208" y="160" />
-        <di:waypoint x="265" y="160" />
+      <bpmndi:BPMNEdge id="Flow_0vjvkuw_di" bpmnElement="Flow_0vjvkuw">
+        <di:waypoint x="790" y="160" />
+        <di:waypoint x="882" y="160" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0cc9w07_di" bpmnElement="Flow_0cc9w07">
-        <di:waypoint x="315" y="160" />
-        <di:waypoint x="392" y="160" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0rbk1dc_di" bpmnElement="Flow_0rbk1dc">
-        <di:waypoint x="428" y="160" />
-        <di:waypoint x="520" y="160" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1c2y9xf_di" bpmnElement="Flow_1c2y9xf">
-        <di:waypoint x="620" y="160" />
-        <di:waypoint x="690" y="160" />
+      <bpmndi:BPMNEdge id="Flow_0zqoa38_di" bpmnElement="Flow_0zqoa38">
+        <di:waypoint x="428" y="270" />
+        <di:waypoint x="882" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1c836r6_di" bpmnElement="Flow_1c836r6">
         <di:waypoint x="290" y="185" />
         <di:waypoint x="290" y="270" />
         <di:waypoint x="392" y="270" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0zqoa38_di" bpmnElement="Flow_0zqoa38">
-        <di:waypoint x="428" y="270" />
-        <di:waypoint x="882" y="270" />
+      <bpmndi:BPMNEdge id="Flow_1c2y9xf_di" bpmnElement="Flow_1c2y9xf">
+        <di:waypoint x="620" y="160" />
+        <di:waypoint x="690" y="160" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0vjvkuw_di" bpmnElement="Flow_0vjvkuw">
-        <di:waypoint x="790" y="160" />
-        <di:waypoint x="882" y="160" />
+      <bpmndi:BPMNEdge id="Flow_0rbk1dc_di" bpmnElement="Flow_0rbk1dc">
+        <di:waypoint x="428" y="160" />
+        <di:waypoint x="520" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cc9w07_di" bpmnElement="Flow_0cc9w07">
+        <di:waypoint x="315" y="160" />
+        <di:waypoint x="392" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_161pewc_di" bpmnElement="Flow_161pewc">
+        <di:waypoint x="208" y="160" />
+        <di:waypoint x="265" y="160" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="172" y="142" width="36" height="36" />
@@ -91,9 +91,8 @@
           <dc:Bounds x="370" y="185" width="84" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1rw3bx4_di" bpmnElement="Activity_1sm2fug">
-        <dc:Bounds x="520" y="120" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="Event_07dzbsj_di" bpmnElement="Event_07dzbsj">
+        <dc:Bounds x="882" y="142" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1iaercn_di" bpmnElement="Event_1iaercn">
         <dc:Bounds x="392" y="252" width="36" height="36" />
@@ -101,13 +100,14 @@
           <dc:Bounds x="381" y="295" width="59" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_07dzbsj_di" bpmnElement="Event_07dzbsj">
-        <dc:Bounds x="882" y="142" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1q3qmvj_di" bpmnElement="Event_1q3qmvj">
         <dc:Bounds x="882" y="252" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_109j6ar_di" bpmnElement="Activity_1eec02c">
+      <bpmndi:BPMNShape id="Activity_1rw3bx4_di" bpmnElement="Send_Registration_Result">
+        <dc:Bounds x="520" y="120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_109j6ar_di" bpmnElement="Close_Registration">
         <dc:Bounds x="690" y="120" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>

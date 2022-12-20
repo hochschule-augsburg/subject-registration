@@ -20,6 +20,8 @@ public class Registration {
 
     private final List<SubjectSelection> subjectSelection;
 
+    private UUID registrationWindowId;
+
     @Builder.Default
     private RegistrationStatus status = RegistrationStatus.OPEN;
 

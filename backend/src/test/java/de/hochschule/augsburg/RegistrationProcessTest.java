@@ -19,93 +19,43 @@ public class RegistrationProcessTest {
             .build();
 
     @Test
-    //@Disabled
     @Deployment(resources = {"subject_registration.bpmn"})
     public void shouldExecuteHappyPath() {
+        DelegateExpressions.registerJavaDelegateMock("registrationResultsMailing");
         // Given we create a new process instance
         final ProcessInstance processInstance = runtimeService()
-                .startProcessInstanceByKey("Process_Register_Subject", Map.of("student", "max.mustermann"));
+                .startProcessInstanceByKey("Process_Register_Subject");
 
         assertThat(processInstance).isActive();
 
-        assertThat(processInstance).isWaitingAt("UserTask_Subject_Update");
-
-        complete(task());
-
-        assertThat(processInstance).hasPassed("UserTask_Subject_Update");
-
-        assertThat(processInstance).isWaitingAt("UserTask_Subject_Update");
-
-        runtimeService().signalEventReceived("Signal_RegisterWindow_Timeout");
-
-        assertThat(processInstance).isWaitingAt("SignalEvent_Results_Available");
 
         runtimeService().signalEventReceived("SignalEvent_Results_Available");
 
-        assertThat(processInstance).isWaitingAt("UserTask_Confirm_Results");
+        assertThat(processInstance).isWaitingAt("Send_Registration_Result");
 
-        complete(task());
+        execute(job());
 
-        assertThat(processInstance).isEnded();
-    }
+        assertThat(processInstance).isWaitingAt("Close_Registration");
 
-    @Test
-    @Disabled
-    @Deployment(resources = {"subject_registration.bpmn"})
-    public void shouldCancelRegistration() {
-
-        DelegateExpressions.registerJavaDelegateMock("cancellationDelegate")
-                .onExecutionSetVariable("registrationCanceled", true);
-
-        // Given we create a new process instance
-        final ProcessInstance processInstance = runtimeService()
-                .startProcessInstanceByKey("Process_Register_Subject", Map.of("student", "max.mustermann"));
-
-        assertThat(processInstance).isActive();
-
-        assertThat(processInstance).isWaitingAt("UserTask_Subject_Update");
-
-        taskService().handleBpmnError(task().getId(), "registrationCancel");
-
-        assertThat(processInstance).isWaitingAt("Activity_Cancel_Registration");
+        DelegateExpressions.registerJavaDelegateMock("closeRegistrationDelegate");
 
         execute(job());
 
         assertThat(processInstance).isEnded();
-
-        assertThat(processInstance).hasVariables("registrationCanceled");
     }
 
     @Test
-    @Disabled
     @Deployment(resources = {"subject_registration.bpmn"})
-    public void shouldExecuteTimeout() {
+    public void shouldCancelRegistration() {
+
         // Given we create a new process instance
         final ProcessInstance processInstance = runtimeService()
-                .startProcessInstanceByKey("Process_Register_Subject", Map.of("student", "max.mustermann"));
+                .startProcessInstanceByKey("Process_Register_Subject");
 
         assertThat(processInstance).isActive();
 
-        assertThat(processInstance).isWaitingAt("UserTask_Subject_Update");
-
-        complete(task());
-
-        assertThat(processInstance).hasPassed("UserTask_Subject_Update");
-
-        assertThat(processInstance).isWaitingAt("UserTask_Subject_Update");
-
-        runtimeService().signalEventReceived("Signal_RegisterWindow_Timeout");
-
-        assertThat(processInstance).isWaitingAt("SignalEvent_Results_Available");
-
-        runtimeService().signalEventReceived("SignalEvent_Results_Available");
-
-        assertThat(processInstance).isWaitingAt("UserTask_Confirm_Results");
-
-        execute(jobQuery().timers().singleResult());
+        runtimeService().correlateMessage("cancel_registration");
 
         assertThat(processInstance).isEnded();
     }
-
-
 }
