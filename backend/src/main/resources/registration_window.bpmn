@@ -56,15 +56,15 @@
       <bpmn:incoming>Flow_0vljjkt</bpmn:incoming>
       <bpmn:outgoing>Flow_0scy5fh</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_Mail_Registration_Soon" name="Mail registration soon" camunda:asyncAfter="true" camunda:delegateExpression="${registrationReminder}">
+    <bpmn:serviceTask id="Activity_Mail_Registration_Soon" name="Mail registration soon" camunda:asyncBefore="true" camunda:delegateExpression="${registrationReminder}">
       <bpmn:incoming>Flow_0n4du81</bpmn:incoming>
       <bpmn:outgoing>Flow_0irkd38</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_Mail_Registration_start" name="Mail registration starts" camunda:asyncAfter="true" camunda:delegateExpression="${registrationResultsMailing}">
+    <bpmn:serviceTask id="Activity_Mail_Registration_start" name="Mail registration starts" camunda:asyncBefore="true" camunda:delegateExpression="${registrationResultsMailing}">
       <bpmn:incoming>Flow_0es92iq</bpmn:incoming>
       <bpmn:outgoing>Flow_0lvol67</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_Mail_Results_Available" name="Mail results available" camunda:asyncAfter="true" camunda:delegateExpression="${registrationResultsMailing}">
+    <bpmn:serviceTask id="Activity_Mail_Results_Available" name="Mail results available" camunda:asyncBefore="true" camunda:delegateExpression="${registrationResultsMailing}">
       <bpmn:incoming>Flow_0xbquxp</bpmn:incoming>
       <bpmn:outgoing>Flow_1851o77</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -163,9 +163,6 @@
           <dc:Bounds x="1522" y="305" width="63" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_07jwkl6_di" bpmnElement="Activity_Registration_release">
-        <dc:Bounds x="640" y="240" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0txrnoj_di" bpmnElement="Activity_Registration_Algorithm">
         <dc:Bounds x="1280" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -185,23 +182,26 @@
       <bpmndi:BPMNShape id="Activity_1c7fwf1_di" bpmnElement="Activity_Mail_Registration_Soon">
         <dc:Bounds x="370" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nq5on1_di" bpmnElement="Activity_Mail_Results_Available">
+        <dc:Bounds x="1610" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1uxtj71_di" bpmnElement="Activity_Mail_Registration_start">
         <dc:Bounds x="810" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1nq5on1_di" bpmnElement="Activity_Mail_Results_Available">
-        <dc:Bounds x="1610" y="240" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_07jwkl6_di" bpmnElement="Activity_Registration_release">
+        <dc:Bounds x="640" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0fgi7vy_di" bpmnElement="Association_0fgi7vy">
         <di:waypoint x="260" y="265" />
         <di:waypoint x="220" y="210" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_03rb8ba_di" bpmnElement="Association_03rb8ba">
-        <di:waypoint x="890" y="240" />
-        <di:waypoint x="963" y="144" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1j3pf0f_di" bpmnElement="Association_1j3pf0f">
         <di:waypoint x="407" y="240" />
         <di:waypoint x="395" y="202" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_03rb8ba_di" bpmnElement="Association_03rb8ba">
+        <di:waypoint x="890" y="240" />
+        <di:waypoint x="963" y="144" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
