@@ -4,6 +4,7 @@ import de.hochschule.augsburg.mailing.service.MailingService;
 import de.hochschule.augsburg.mailing.utility.MailType;
 import de.hochschule.augsburg.mailing.utility.Property;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Disabled;
 
@@ -17,12 +18,14 @@ public class MailingTest {
     private String studentMail;
 
     @Before
+    @Ignore
     public void setup() {
         Property.setApplicationPropertyPath(APPLICATION_PROPERTY_PATH);
         Property.setMailingPropertyPath(MAILING_PROPERTY_PATH);
     }
 
     @Disabled("In cause of changes in method signature ")
+    @Ignore
     @Test(expected = Test.None.class)
     public void testsendEmail() {
         service.sendEmail(mailType, mailContent);
