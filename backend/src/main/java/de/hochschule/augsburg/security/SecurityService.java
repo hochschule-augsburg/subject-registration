@@ -27,6 +27,15 @@ public class SecurityService {
         }
     }
 
+    public String getUserEmail() {
+        if (ldapActive) {
+            final Jwt auth = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return auth.getClaim("email");
+        } else {
+            return "tester";
+        }
+    }
+
     public boolean isAdmin() {
         final Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication()
                 .getAuthorities();

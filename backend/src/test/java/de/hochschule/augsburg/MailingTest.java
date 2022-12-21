@@ -1,11 +1,10 @@
 package de.hochschule.augsburg;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import de.hochschule.augsburg.mailing.service.MailingService;
 import de.hochschule.augsburg.mailing.utility.MailType;
 import de.hochschule.augsburg.mailing.utility.Property;
+import org.junit.Before;
+import org.junit.Test;
 
 
 public class MailingTest {
@@ -17,14 +16,13 @@ public class MailingTest {
     private String studentMail;
 
     @Before
-    public void setup(){
+    public void setup() {
         Property.setApplicationPropertyPath(APPLICATION_PROPERTY_PATH);
         Property.setMailingPropertyPath(MAILING_PROPERTY_PATH);
     }
 
     @Test(expected = Test.None.class)
     public void testsendEmail() {
-        studentMail = "hyrov1vladyslav@hneu.net";
-        service.sendEmail(studentMail, mailType, mailContent);
+        service.sendEmail(mailType, mailContent);
     }
 }

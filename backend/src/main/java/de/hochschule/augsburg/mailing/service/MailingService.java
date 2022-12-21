@@ -1,27 +1,26 @@
 package de.hochschule.augsburg.mailing.service;
 
-import java.util.Date;
-
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import org.springframework.stereotype.Service;
-
 import de.hochschule.augsburg.mailing.utility.MailType;
 import de.hochschule.augsburg.mailing.utility.Property;
+import de.hochschule.augsburg.security.SecurityService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Date;
+
+@RequiredArgsConstructor
 @Service("mailService")
 public class MailingService {
 
+    private SecurityService securityService;
 
-    public void sendEmail(String studentMail, MailType mailType, String content) {
+    public void sendEmail(MailType mailType, String content) {
         try {
 
+            String studentMail = securityService.getUserEmail();
             System.out.println("TLSEmail Start");
             //create Authenticator object to pass in Session.getInstance argument
             Session session = Session.getInstance(Property.getMailingProperty(), setupAuthenticator());
@@ -50,7 +49,7 @@ public class MailingService {
     }
 
     private MimeMessage setupMessageDetails(Session session, String studentMail, String subject,
-            String content) throws MessagingException {
+                                            String content) throws MessagingException {
         MimeMessage msg = new MimeMessage(session);
         //set message headers
         msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
