@@ -35,6 +35,10 @@ public class RegistrationWindowService {
         return this.registrationWindowMapper.map(this.registrationWindowRepository.findAll());
     }
 
+    public RegistrationWindow getActiveRegistrationWindow(){
+        return this.registrationWindowMapper.map(this.registrationWindowRepository.findOpenRegistrationWindow());
+    }
+
     /**
      * Create a new Registration Window.
      *

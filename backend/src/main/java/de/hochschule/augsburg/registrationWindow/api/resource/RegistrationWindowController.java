@@ -45,6 +45,16 @@ public class RegistrationWindowController {
         return ResponseEntity.ok().body(this.registrationWindowApiMapper.map(allRegistrationWindows));
     }
 
+
+    @GetMapping("/active")
+    @Transactional(readOnly = true)
+    @Operation(summary = "Get an active registration window")
+    public ResponseEntity<RegistrationWindowTO> getActiveRegistrtionWindow() {
+        log.debug("Received request to get active registration window");
+        final RegistrationWindow activeRegistrationWindow = this.registrationWindowService.getActiveRegistrationWindow();
+        return ResponseEntity.ok().body(this.registrationWindowApiMapper.map(activeRegistrationWindow));
+    }
+
     @Transactional
     @PutMapping()
     @Operation(summary = "Update an existing registration window")
