@@ -2,24 +2,20 @@ package de.hochschule.augsburg.registration.domain.service;
 
 import de.hochschule.augsburg.registration.domain.mapper.RegistrationMapper;
 import de.hochschule.augsburg.registration.domain.model.Registration;
+import de.hochschule.augsburg.registration.domain.model.RegistrationStatus;
 import de.hochschule.augsburg.registration.domain.model.RegistrationUpdate;
-import de.hochschule.augsburg.registration.domain.model.SubjectSelection;
-import de.hochschule.augsburg.registration.domain.process.RegistrationProcessVariables;
 import de.hochschule.augsburg.registration.infrastructure.entity.RegistrationEntity;
 import de.hochschule.augsburg.registration.infrastructure.repository.RegistrationRepository;
+import de.hochschule.augsburg.registrationWindow.infrastructure.entity.RegistrationWindowEntity;
+import de.hochschule.augsburg.registrationWindow.infrastructure.repository.RegistrationWindowRepository;
 import de.hochschule.augsburg.subject.domain.service.SubjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.camunda.bpm.engine.ManagementService;
 import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.TaskService;
-
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -32,14 +28,11 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RegistrationService {
-
+    private final RegistrationWindowRepository registrationWindowRepository;
     private final RegistrationRepository registrationRepository;
     private final RegistrationMapper registrationMapper;
     private final SubjectService subjectService;
     private final RuntimeService runtimeService;
-    private final TaskService taskService;
-    private final ManagementService managementService;
-    private final RegistrationProcessVariables registrationProcessVariables;
 
     /**
      * Get all registrations.
@@ -71,12 +64,9 @@ public class RegistrationService {
      * @param student         Student that gets assigned to the new registration
      * @return the new registration
      */
-    public Registration createRegistration(final Registration newRegistration, final String student) {
+    public Registration createRegistration(final Registration newRegistration, final String student, final String mail) {
         // Todo only students and admin should be able to create a new registration
 
-        VariableMap variables = Variables.createVariables();
-
-        variables.put("student", student);
         final Registration existRegistration = this.getRegistrationByStudent(student);
 
 
@@ -88,10 +78,16 @@ public class RegistrationService {
         newRegistration.getSubjectSelection().forEach(subjectSelection -> {
             this.subjectService.validateSubject(subjectSelection.getSubject());
         });
+        RegistrationWindowEntity registrationWindow = registrationWindowRepository.findOpenRegistrationWindow();
 
-
+        newRegistration.updateRegistrationWindowId(registrationWindow.getId());
         newRegistration.assignStudent(student);
         final Registration savedRegistration = this.saveRegistration(newRegistration);
+
+        final VariableMap variables = Variables.createVariables();
+        variables.put("registrationId", savedRegistration.getId().toString());
+        variables.put("student", student);
+        variables.put("mail", mail);
 
         // Start new instance with given attributes
         this.runtimeService.startProcessInstanceByKey("Process_Register_Subject", savedRegistration.getId().toString(), variables);
@@ -103,16 +99,20 @@ public class RegistrationService {
      * Update an existing registration.
      *
      * @param registrationUpdate Update that is applied
-     * @param student ID of the student
-     *
+     * @param student            ID of the student
      * @return the updated registration
      */
     public Registration updateRegistration(final RegistrationUpdate registrationUpdate, final String student) {
         final Registration registration = this.getRegistration(registrationUpdate.getId());
 
+
         //is the registration of the given student?
         if (!registration.getStudent().equals(student)) {
             throw new RuntimeException("Registration not available");
+        }
+
+        if (registration.getStatus() != RegistrationStatus.OPEN) {
+            throw new RuntimeException("Registration already closed");
         }
 
         registration.update(registrationUpdate);
@@ -129,9 +129,21 @@ public class RegistrationService {
             throw new RuntimeException("Registration not available");
         }
 
-        this.registrationRepository.deleteById(registration.getId());
+        if (registration.getStatus() != RegistrationStatus.OPEN) {
+            throw new RuntimeException("Registration already closed");
+        }
 
-        // Todo end/delete process
+        this.runtimeService.createMessageCorrelation("cancel_registration")
+                .processInstanceBusinessKey(registration.getId().toString())
+                .correlate();
+
+        this.registrationRepository.deleteById(registration.getId());
+    }
+
+    public void closeRegistration(final UUID registrationId) {
+        final Registration registration = this.getRegistration(registrationId);
+        registration.close();
+        this.registrationRepository.save(this.registrationMapper.map(registration));
     }
 
     // Helper Methods

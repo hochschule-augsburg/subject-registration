@@ -17,6 +17,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         "/camunda/**",
                         "/camunda-welcome/**",
+                        "/h2-console/**",
                         "/v3/api-docs/**",
                         "/swagger-resources",
                         "/swagger-resources/**",

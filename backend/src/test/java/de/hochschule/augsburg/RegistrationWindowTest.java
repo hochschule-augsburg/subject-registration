@@ -4,6 +4,7 @@ import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.junit5.ProcessEngineExtension;
 
+import org.camunda.bpm.extension.mockito.DelegateExpressions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -19,12 +20,13 @@ public class RegistrationWindowTest {
     @Test
     @Deployment(resources = {"registration_window.bpmn"})
     public void processExecutionTest() {
+        DelegateExpressions.registerJavaDelegateMock("registrationReminder");
         ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("Process_Registration_Window", Map.of("registration_window_start", "2021-11-20T10:02:00", "registration_window_end", "2021-11-20T10:02:00"));
         assertThat(processInstance).isActive();
 
         assertThat(processInstance).isWaitingAt("Activity_Mail_Registration_Soon");
 
-        complete(task());
+        execute(job());
 
         assertThat(processInstance).isWaitingAt("TimeEvent_RegistrationWindow_Start");
 
@@ -36,20 +38,18 @@ public class RegistrationWindowTest {
 
         assertThat(processInstance).isWaitingAt("Activity_Mail_Registration_start");
 
-        complete(task());
+        DelegateExpressions.registerJavaDelegateMock("registrationResultsMailing");
+
+
+        execute(job());
 
         assertThat(processInstance).isWaitingAt("TimeEvent_RegistrationWindow_End");
 
         execute(job());
 
-        runtimeService().signalEventReceived("Signal_RegisterWindow_Timeout");
-
-
         assertThat(processInstance).isWaitingAt("Activity_Registration_Lock");
 
-        complete(task());
-
-        assertThat(processInstance).isWaitingAt("TimEvent_Lock_Wait");
+        DelegateExpressions.registerJavaDelegateMock("lockRegistrationWindow");
 
         execute(job());
 
@@ -63,9 +63,11 @@ public class RegistrationWindowTest {
 
         execute(job());
 
+        DelegateExpressions.registerJavaDelegateMock("registrationResultsMailing");
+
         assertThat(processInstance).isWaitingAt("Activity_Mail_Results_Available");
 
-        complete(task());
+        execute(job());
 
         assertThat(processInstance).isEnded();
 

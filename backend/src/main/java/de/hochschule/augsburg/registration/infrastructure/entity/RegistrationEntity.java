@@ -1,5 +1,6 @@
 package de.hochschule.augsburg.registration.infrastructure.entity;
 
+import de.hochschule.augsburg.registration.domain.model.RegistrationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +27,10 @@ public class RegistrationEntity {
 
     @Column(name = "student", nullable = false)
     private String student;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_", nullable = false)
+    private RegistrationStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "registration_id")

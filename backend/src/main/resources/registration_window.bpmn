@@ -4,12 +4,12 @@
     <bpmn:endEvent id="Event_0wyx2ji">
       <bpmn:incoming>Flow_1851o77</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:startEvent id="StartEvent_1" name="Registration window" camunda:asyncBefore="true">
+    <bpmn:startEvent id="StartEvent_1" name="Registration window">
       <bpmn:outgoing>Flow_0n4du81</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1u449fn" sourceRef="Activity_Registration_Algorithm" targetRef="Signal_Results_Available" />
     <bpmn:sequenceFlow id="Flow_0n4du81" sourceRef="StartEvent_1" targetRef="Activity_Mail_Registration_Soon" />
-    <bpmn:sequenceFlow id="Flow_0vljjkt" sourceRef="TimeEvent_RegistrationWindow_End" targetRef="Signal_RegisterWindow_Timeout" />
+    <bpmn:sequenceFlow id="Flow_0vljjkt" sourceRef="TimeEvent_RegistrationWindow_End" targetRef="Activity_Registration_Lock" />
     <bpmn:intermediateCatchEvent id="TimeEvent_RegistrationWindow_End" name="Registration window end">
       <bpmn:incoming>Flow_0lvol67</bpmn:incoming>
       <bpmn:outgoing>Flow_0vljjkt</bpmn:outgoing>
@@ -18,7 +18,7 @@
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_0lvol67" sourceRef="Activity_Mail_Registration_start" targetRef="TimeEvent_RegistrationWindow_End" />
-    <bpmn:sequenceFlow id="Flow_0scy5fh" sourceRef="Activity_Registration_Lock" targetRef="TimEvent_Lock_Wait" />
+    <bpmn:sequenceFlow id="Flow_0scy5fh" sourceRef="Activity_Registration_Lock" targetRef="Activity_Registration_Algorithm" />
     <bpmn:sequenceFlow id="Flow_043xtn4" sourceRef="TimeEvent_RegistrationWindow_Start" targetRef="Activity_Registration_release" />
     <bpmn:intermediateCatchEvent id="TimeEvent_RegistrationWindow_Start" name="Registration window start">
       <bpmn:incoming>Flow_0irkd38</bpmn:incoming>
@@ -28,12 +28,6 @@
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_0irkd38" sourceRef="Activity_Mail_Registration_Soon" targetRef="TimeEvent_RegistrationWindow_Start" />
-    <bpmn:sequenceFlow id="Flow_0zo90af" sourceRef="Signal_RegisterWindow_Timeout" targetRef="Activity_Registration_Lock" />
-    <bpmn:intermediateThrowEvent id="Signal_RegisterWindow_Timeout" name="Register window timeout">
-      <bpmn:incoming>Flow_0vljjkt</bpmn:incoming>
-      <bpmn:outgoing>Flow_0zo90af</bpmn:outgoing>
-      <bpmn:signalEventDefinition id="SignalEventDefinition_0tztrwn" signalRef="Signal_0nmy0gx" />
-    </bpmn:intermediateThrowEvent>
     <bpmn:sequenceFlow id="Flow_0es92iq" sourceRef="Activity_Registration_release" targetRef="Activity_Mail_Registration_start" />
     <bpmn:sequenceFlow id="Flow_0x5o5id" sourceRef="Signal_Results_Available" targetRef="TimEvent_Results_Wait" />
     <bpmn:intermediateThrowEvent id="Signal_Results_Available" name="Results available">
@@ -41,14 +35,6 @@
       <bpmn:outgoing>Flow_0x5o5id</bpmn:outgoing>
       <bpmn:signalEventDefinition id="SignalEventDefinition_08djpfm" signalRef="Signal_045hkbc" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:sequenceFlow id="Flow_1y6q87b" sourceRef="TimEvent_Lock_Wait" targetRef="Activity_Registration_Algorithm" />
-    <bpmn:intermediateCatchEvent id="TimEvent_Lock_Wait" name="Wait after registration lock (necessary?)">
-      <bpmn:incoming>Flow_0scy5fh</bpmn:incoming>
-      <bpmn:outgoing>Flow_1y6q87b</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_0u3m6r8">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P1D</bpmn:timeDuration>
-      </bpmn:timerEventDefinition>
-    </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="TimEvent_Results_Wait" name="Wait after calculation (necessary?)">
       <bpmn:incoming>Flow_0x5o5id</bpmn:incoming>
       <bpmn:outgoing>Flow_0xbquxp</bpmn:outgoing>
@@ -62,23 +48,23 @@
       <bpmn:incoming>Flow_043xtn4</bpmn:incoming>
       <bpmn:outgoing>Flow_0es92iq</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_Registration_Lock" name="Lock registrations">
-      <bpmn:incoming>Flow_0zo90af</bpmn:incoming>
-      <bpmn:outgoing>Flow_0scy5fh</bpmn:outgoing>
-    </bpmn:userTask>
     <bpmn:userTask id="Activity_Registration_Algorithm" name="Calculate registrations">
-      <bpmn:incoming>Flow_1y6q87b</bpmn:incoming>
+      <bpmn:incoming>Flow_0scy5fh</bpmn:incoming>
       <bpmn:outgoing>Flow_1u449fn</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_Mail_Registration_Soon" name="Mail registration soon" camunda:asyncAfter="true" camunda:delegateExpression="${registrationReminder}">
+    <bpmn:serviceTask id="Activity_Registration_Lock" name="Lock registration window" camunda:asyncBefore="true" camunda:delegateExpression="${lockRegistrationWindow}">
+      <bpmn:incoming>Flow_0vljjkt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0scy5fh</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_Mail_Registration_Soon" name="Mail registration soon" camunda:asyncBefore="true" camunda:delegateExpression="${registrationReminder}">
       <bpmn:incoming>Flow_0n4du81</bpmn:incoming>
       <bpmn:outgoing>Flow_0irkd38</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_Mail_Registration_start" name="Mail registration starts" camunda:delegateExpression="${registrationResultsMailing}">
+    <bpmn:serviceTask id="Activity_Mail_Registration_start" name="Mail registration starts" camunda:asyncBefore="true" camunda:delegateExpression="${registrationResultsMailing}">
       <bpmn:incoming>Flow_0es92iq</bpmn:incoming>
       <bpmn:outgoing>Flow_0lvol67</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_Mail_Results_Available" name="Mail results available" camunda:delegateExpression="${registrationResultsMailing}">
+    <bpmn:serviceTask id="Activity_Mail_Results_Available" name="Mail results available" camunda:asyncBefore="true" camunda:delegateExpression="${registrationResultsMailing}">
       <bpmn:incoming>Flow_0xbquxp</bpmn:incoming>
       <bpmn:outgoing>Flow_1851o77</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -108,21 +94,13 @@
         <di:waypoint x="1568" y="280" />
         <di:waypoint x="1610" y="280" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1y6q87b_di" bpmnElement="Flow_1y6q87b">
-        <di:waypoint x="1278" y="280" />
-        <di:waypoint x="1310" y="280" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0x5o5id_di" bpmnElement="Flow_0x5o5id">
         <di:waypoint x="1488" y="280" />
         <di:waypoint x="1532" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0es92iq_di" bpmnElement="Flow_0es92iq">
         <di:waypoint x="740" y="280" />
-        <di:waypoint x="780" y="280" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0zo90af_di" bpmnElement="Flow_0zo90af">
-        <di:waypoint x="1058" y="280" />
-        <di:waypoint x="1100" y="280" />
+        <di:waypoint x="810" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0irkd38_di" bpmnElement="Flow_0irkd38">
         <di:waypoint x="470" y="280" />
@@ -133,23 +111,23 @@
         <di:waypoint x="640" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0scy5fh_di" bpmnElement="Flow_0scy5fh">
-        <di:waypoint x="1200" y="280" />
-        <di:waypoint x="1242" y="280" />
+        <di:waypoint x="1230" y="280" />
+        <di:waypoint x="1280" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0lvol67_di" bpmnElement="Flow_0lvol67">
-        <di:waypoint x="880" y="280" />
-        <di:waypoint x="932" y="280" />
+        <di:waypoint x="910" y="280" />
+        <di:waypoint x="992" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0vljjkt_di" bpmnElement="Flow_0vljjkt">
-        <di:waypoint x="968" y="280" />
-        <di:waypoint x="1022" y="280" />
+        <di:waypoint x="1028" y="280" />
+        <di:waypoint x="1130" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0n4du81_di" bpmnElement="Flow_0n4du81">
         <di:waypoint x="288" y="280" />
         <di:waypoint x="370" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1u449fn_di" bpmnElement="Flow_1u449fn">
-        <di:waypoint x="1410" y="280" />
+        <di:waypoint x="1380" y="280" />
         <di:waypoint x="1452" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0wyx2ji_di" bpmnElement="Event_0wyx2ji">
@@ -162,9 +140,9 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0weo1xx_di" bpmnElement="TimeEvent_RegistrationWindow_End">
-        <dc:Bounds x="932" y="262" width="36" height="36" />
+        <dc:Bounds x="992" y="262" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="922" y="305" width="59" height="27" />
+          <dc:Bounds x="982" y="305" width="59" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_079ry3n_di" bpmnElement="TimeEvent_RegistrationWindow_Start">
@@ -173,22 +151,10 @@
           <dc:Bounds x="521" y="305" width="61" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0nrezsu_di" bpmnElement="Signal_RegisterWindow_Timeout">
-        <dc:Bounds x="1022" y="262" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1000" y="305" width="81" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_09zff80_di" bpmnElement="Signal_Results_Available">
         <dc:Bounds x="1452" y="262" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1429" y="305" width="84" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0xmwvl0_di" bpmnElement="TimEvent_Lock_Wait">
-        <dc:Bounds x="1242" y="262" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1221" y="299" width="78" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1omgx43_di" bpmnElement="TimEvent_Results_Wait">
@@ -197,44 +163,45 @@
           <dc:Bounds x="1522" y="305" width="63" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_07jwkl6_di" bpmnElement="Activity_Registration_release">
-        <dc:Bounds x="640" y="240" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_04widbf_di" bpmnElement="Activity_Registration_Lock">
-        <dc:Bounds x="1100" y="240" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0txrnoj_di" bpmnElement="Activity_Registration_Algorithm">
-        <dc:Bounds x="1310" y="240" width="100" height="80" />
+        <dc:Bounds x="1280" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ktwmox_di" bpmnElement="Activity_Mail_Registration_Soon">
-        <dc:Bounds x="370" y="240" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1fw7be1_di" bpmnElement="Activity_Mail_Registration_start">
-        <dc:Bounds x="780" y="240" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_108msul_di" bpmnElement="Activity_Mail_Results_Available">
-        <dc:Bounds x="1610" y="240" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_17skbl3_di" bpmnElement="Activity_Registration_Lock">
+        <dc:Bounds x="1130" y="240" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_02sfxza_di" bpmnElement="TextAnnotation_02sfxza">
         <dc:Bounds x="160" y="180" width="100" height="30" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1id71ta_di" bpmnElement="TextAnnotation_1id71ta">
-        <dc:Bounds x="760" y="120" width="120" height="64" />
+        <dc:Bounds x="880" y="80" width="120" height="64" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1bkoz1n_di" bpmnElement="TextAnnotation_1bkoz1n">
         <dc:Bounds x="330" y="148" width="150" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1c7fwf1_di" bpmnElement="Activity_Mail_Registration_Soon">
+        <dc:Bounds x="370" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nq5on1_di" bpmnElement="Activity_Mail_Results_Available">
+        <dc:Bounds x="1610" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1uxtj71_di" bpmnElement="Activity_Mail_Registration_start">
+        <dc:Bounds x="810" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07jwkl6_di" bpmnElement="Activity_Registration_release">
+        <dc:Bounds x="640" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0fgi7vy_di" bpmnElement="Association_0fgi7vy">
         <di:waypoint x="260" y="265" />
         <di:waypoint x="220" y="210" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_03rb8ba_di" bpmnElement="Association_03rb8ba">
-        <di:waypoint x="841" y="240" />
-        <di:waypoint x="858" y="184" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1j3pf0f_di" bpmnElement="Association_1j3pf0f">
         <di:waypoint x="407" y="240" />
         <di:waypoint x="395" y="202" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_03rb8ba_di" bpmnElement="Association_03rb8ba">
+        <di:waypoint x="890" y="240" />
+        <di:waypoint x="963" y="144" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

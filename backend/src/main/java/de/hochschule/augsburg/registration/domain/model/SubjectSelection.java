@@ -14,7 +14,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class SubjectSelection {
 
-    private final UUID id;
+    public SubjectSelection(final SubjectSelectionUpdate update) {
+        this.subject = update.getSubject();
+        this.points = update.getPoints();
+    }
+
+    private UUID id;
 
     private final UUID subject;
 
