@@ -4,15 +4,19 @@ import de.hochschule.augsburg.registration.domain.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-@Component
+import javax.inject.Named;
+
 @RequiredArgsConstructor
+@Named
 public class CloseRegistrationDelegate implements JavaDelegate {
 
-    private final RegistrationService service;
+    @Autowired
+    private  RegistrationService service;
 
     @Override
     public void execute(final DelegateExecution delegateExecution) throws Exception {

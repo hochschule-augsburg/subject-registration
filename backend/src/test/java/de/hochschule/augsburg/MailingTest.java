@@ -4,6 +4,7 @@ import de.hochschule.augsburg.mailing.service.MailingService;
 import de.hochschule.augsburg.mailing.utility.MailType;
 import de.hochschule.augsburg.mailing.utility.Property;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -13,7 +14,6 @@ public class MailingTest {
     public static String MAILING_PROPERTY_PATH = "./src/test/resources/mailing.properties";
     private final MailType mailType = MailType.REGISTRATION_STARTS_SOON;
     private final String mailContent = "Anmeldung laeft bald los!";
-    private String studentMail;
 
     @Before
     public void setup() {
@@ -21,7 +21,7 @@ public class MailingTest {
         Property.setMailingPropertyPath(MAILING_PROPERTY_PATH);
     }
 
-    @Test(expected = Test.None.class)
+    @Test
     public void testsendEmail() {
         service.sendEmail(mailType, mailContent);
     }

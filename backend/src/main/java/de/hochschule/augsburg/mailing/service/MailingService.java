@@ -20,7 +20,7 @@ public class MailingService {
     public void sendEmail(MailType mailType, String content) {
         try {
 
-            String studentMail = securityService.getUserEmail();
+            String studentMail = "shkelzen.veliqi1@hs-augsburg.de";
             System.out.println("TLSEmail Start");
             //create Authenticator object to pass in Session.getInstance argument
             Session session = Session.getInstance(Property.getMailingProperty(), setupAuthenticator());
