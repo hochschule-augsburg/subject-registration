@@ -6,6 +6,7 @@ import de.hochschule.augsburg.mailing.utility.Property;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 
 
 public class MailingTest {
