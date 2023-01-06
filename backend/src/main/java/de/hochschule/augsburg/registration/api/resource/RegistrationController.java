@@ -6,11 +6,14 @@ import de.hochschule.augsburg.registration.api.transport.RegistrationTO;
 import de.hochschule.augsburg.registration.api.transport.RegistrationUpdateTO;
 import de.hochschule.augsburg.registration.domain.model.Registration;
 import de.hochschule.augsburg.registration.domain.service.RegistrationService;
+import de.hochschule.augsburg.security.SecurityService;
 import de.hochschule.augsburg.security.UserContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -33,6 +36,9 @@ public class RegistrationController {
     private final RegistrationApiMapper registrationApiMapper;
     private final UserContext userContext;
 
+    @Autowired
+    private SecurityService securityService;
+
     @GetMapping
     @Transactional(readOnly = true)
     @Operation(summary = "Get list of all Registrations")
@@ -42,14 +48,19 @@ public class RegistrationController {
         return ResponseEntity.ok().body(this.registrationApiMapper.map(allProjects));
     }
 
-    @GetMapping("/{uid}")
+    @GetMapping("/bystudent")
     @Transactional(readOnly = true)
     @Operation(summary = "Get registration by student")
-    public ResponseEntity<RegistrationTO> getRegistration(@PathVariable final String uid) {
+    public ResponseEntity<RegistrationTO> getRegistration() {
+        String student = this.securityService.getStudent();
         log.debug("Received request to get all registrations");
-        final Registration registration = this.registrationService.getRegistrationByStudent(uid);
+        final Registration registration = this.registrationService.getRegistrationByStudent(student);
+        if (registration == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }
         return ResponseEntity.ok().body(this.registrationApiMapper.map(registration));
     }
+
 
     @Transactional
     @PostMapping

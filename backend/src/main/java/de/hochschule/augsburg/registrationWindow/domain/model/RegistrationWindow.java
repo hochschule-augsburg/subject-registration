@@ -20,12 +20,14 @@ public class RegistrationWindow {
 
     private RegistrationWindowStatus registrationWindowStatus;
 
-    public void open(){
-        this.registrationWindowStatus = RegistrationWindowStatus.ACTIVE;
+    public void open() {
+        this.registrationWindowStatus = RegistrationWindowStatus.active;
     }
-    public void close(){
-        this.registrationWindowStatus = RegistrationWindowStatus.CLOSED;
+
+    public void close() {
+        this.registrationWindowStatus = RegistrationWindowStatus.closed;
     }
+
     public void update(final RegistrationWindowUpdate update) {
         this.startDate = update.getStartDate();
         this.endDate = update.getEndDate();
