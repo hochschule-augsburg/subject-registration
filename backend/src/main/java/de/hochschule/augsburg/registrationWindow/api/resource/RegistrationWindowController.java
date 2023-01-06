@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -52,6 +53,10 @@ public class RegistrationWindowController {
     public ResponseEntity<RegistrationWindowTO> getActiveRegistrtionWindow() {
         log.debug("Received request to get active registration window");
         final RegistrationWindow activeRegistrationWindow = this.registrationWindowService.getActiveRegistrationWindow();
+        if (activeRegistrationWindow == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+
         return ResponseEntity.ok().body(this.registrationWindowApiMapper.map(activeRegistrationWindow));
     }
 
