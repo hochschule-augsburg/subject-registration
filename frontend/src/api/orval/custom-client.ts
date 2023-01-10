@@ -1,6 +1,6 @@
 import Axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
-export const AXIOS_INSTANCE = Axios.create({ baseURL: 'http://localhost:9090/' });
+export const AXIOS_INSTANCE = createAxiosInstance();
 
 export const customInstance = <T>(config: AxiosRequestConfig): Promise<T> => {
   const source = Axios.CancelToken.source();
@@ -15,6 +15,14 @@ export const customInstance = <T>(config: AxiosRequestConfig): Promise<T> => {
 
   return promise;
 };
+
+function createAxiosInstance() {
+  // if this is the case, we are probably on the deployment server
+  if (window.location.hostname.includes("hs-augsburg.de")) {
+    return Axios.create({ baseURL: window.location.hostname + '/api/' });
+  }
+  return Axios.create({ baseURL: 'http://localhost:9090/' });
+}
 
 export default customInstance;
 
