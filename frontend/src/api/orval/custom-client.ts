@@ -19,7 +19,7 @@ export const customInstance = <T>(config: AxiosRequestConfig): Promise<T> => {
 function createAxiosInstance() {
   // if this is the case, we are probably on the deployment server
   if (window.location.hostname.includes("hs-augsburg.de")) {
-    return Axios.create({ baseURL: window.location.hostname + '/api/' });
+    return Axios.create({ baseURL: '/api/' });
   }
   return Axios.create({ baseURL: 'http://localhost:9090/' });
 }
