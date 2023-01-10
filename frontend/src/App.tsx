@@ -43,6 +43,7 @@ function App() {
                     dispatchToken(keycloak.token);
                     setUserId(keycloak.idTokenParsed?.sub);
                 }
+                setKeycloak(keycloak);
             } else {
                 setKeycloak(keycloak);
                 setAuthStatus("unauthenticated");
