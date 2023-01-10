@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 import java.util.UUID;
 
 @Getter
@@ -14,18 +16,18 @@ public class RegistrationWindow {
 
     private final String semester;
 
-    private String startDate;
+    private LocalDateTime startDate;
 
-    private String endDate;
+    private LocalDateTime endDate;
 
-    private RegistrationWindowStatus registrationWindowStatus;
+    private RegistrationWindowStatus status;
 
     public void open() {
-        this.registrationWindowStatus = RegistrationWindowStatus.active;
+        this.status = RegistrationWindowStatus.active;
     }
 
     public void close() {
-        this.registrationWindowStatus = RegistrationWindowStatus.closed;
+        this.status = RegistrationWindowStatus.closed;
     }
 
     public void update(final RegistrationWindowUpdate update) {

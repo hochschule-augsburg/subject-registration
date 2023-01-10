@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
+import javax.persistence.*;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -20,16 +23,13 @@ public class NewRegistrationWindowTO {
     @NotBlank
     private String semester;
 
-    @NotNull
-    @NotBlank
-    private String startDate;
+    @Basic
+    private LocalDateTime startDate;
+
+    @Basic
+    private LocalDateTime endDate;
 
     @NotNull
-    @NotBlank
-    private String endDate;
-
-    @NotNull
-    @NotBlank
     private RegistrationWindowStatus status;
 
 }

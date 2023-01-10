@@ -1,0 +1,11 @@
+.MuiTab-textColorPrimary.MuiTab-textColorPrimary {
+    color: white;
+}
+
+.MuiTab-textColorPrimary.MuiTab-textColorPrimary.Mui-selected {
+    color: white;
+}
+
+.MuiTabs-indicator.MuiTabs-indicator {
+    background-color: white;
+}

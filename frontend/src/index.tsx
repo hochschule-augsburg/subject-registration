@@ -5,15 +5,23 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./resources/css/CustomBootstrap.scss";
 // uncomment when bootstrap JS is needed
 //import 'bootstrap/dist/js/bootstrap.bundle';
-import App from "./App";
+import { App } from "./App";
 import reportWebVitals from "./reportWebVitals";
+import { AuthProvider } from "./context/AuthContext";
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 const container = document.getElementById("root");
 const root = createRoot(container!);
 
 root.render(
     <React.StrictMode>
-        <App />
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+                <App />
+            </AuthProvider>
+        </QueryClientProvider>
     </React.StrictMode>
 );
 
